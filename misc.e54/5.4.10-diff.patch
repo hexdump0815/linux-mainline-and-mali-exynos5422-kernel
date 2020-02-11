@@ -1,0 +1,3482 @@
+diff --git a/Documentation/devicetree/bindings/arm/samsung/exynos-chipid.txt b/Documentation/devicetree/bindings/arm/samsung/exynos-chipid.txt
+deleted file mode 100644
+index 85c5dfd4a720..000000000000
+--- a/Documentation/devicetree/bindings/arm/samsung/exynos-chipid.txt
++++ /dev/null
+@@ -1,12 +0,0 @@
+-SAMSUNG Exynos SoCs Chipid driver.
+-
+-Required properties:
+-- compatible : Should at least contain "samsung,exynos4210-chipid".
+-
+-- reg: offset and length of the register set
+-
+-Example:
+-	chipid@10000000 {
+-		compatible = "samsung,exynos4210-chipid";
+-		reg = <0x10000000 0x100>;
+-	};
+diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
+index 47bc1ac36426..06179c94702a 100644
+--- a/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
++++ b/Documentation/devicetree/bindings/gpu/arm,mali-midgard.yaml
+@@ -14,6 +14,14 @@ properties:
+     pattern: '^gpu@[a-f0-9]+$'
+   compatible:
+     oneOf:
++      - items:
++          - enum:
++             - samsung,exynos5250-mali
++          - const: arm,mali-t604
++      - items:
++          - enum:
++             - samsung,exynos5420-mali
++          - const: arm,mali-t628
+       - items:
+           - enum:
+              - allwinner,sun50i-h6-mali
+@@ -25,22 +33,14 @@ properties:
+       - items:
+           - enum:
+              - rockchip,rk3288-mali
++             - samsung,exynos5433-mali
+           - const: arm,mali-t760
+       - items:
+           - enum:
+              - rockchip,rk3399-mali
+           - const: arm,mali-t860
+-      - items:
+-          - enum:
+-             - samsung,exynos5250-mali
+-          - const: arm,mali-t604
+-      - items:
+-          - enum:
+-             - samsung,exynos5433-mali
+-          - const: arm,mali-t760
+ 
+           # "arm,mali-t624"
+-          # "arm,mali-t628"
+           # "arm,mali-t830"
+           # "arm,mali-t880"
+ 
+diff --git a/Documentation/devicetree/bindings/lpddr2/lpddr2-timings.txt b/Documentation/devicetree/bindings/lpddr2/lpddr2-timings.txt
+deleted file mode 100644
+index 9ceb19e0c7fd..000000000000
+--- a/Documentation/devicetree/bindings/lpddr2/lpddr2-timings.txt
++++ /dev/null
+@@ -1,52 +0,0 @@
+-* AC timing parameters of LPDDR2(JESD209-2) memories for a given speed-bin
+-
+-Required properties:
+-- compatible : Should be "jedec,lpddr2-timings"
+-- min-freq : minimum DDR clock frequency for the speed-bin. Type is <u32>
+-- max-freq : maximum DDR clock frequency for the speed-bin. Type is <u32>
+-
+-Optional properties:
+-
+-The following properties represent AC timing parameters from the memory
+-data-sheet of the device for a given speed-bin. All these properties are
+-of type <u32> and the default unit is ps (pico seconds). Parameters with
+-a different unit have a suffix indicating the unit such as 'tRAS-max-ns'
+-- tRCD
+-- tWR
+-- tRAS-min
+-- tRRD
+-- tWTR
+-- tXP
+-- tRTP
+-- tDQSCK-max
+-- tFAW
+-- tZQCS
+-- tZQinit
+-- tRPab
+-- tZQCL
+-- tCKESR
+-- tRAS-max-ns
+-- tDQSCK-max-derated
+-
+-Example:
+-
+-timings_elpida_ECB240ABACN_400mhz: lpddr2-timings@0 {
+-	compatible	= "jedec,lpddr2-timings";
+-	min-freq	= <10000000>;
+-	max-freq	= <400000000>;
+-	tRPab		= <21000>;
+-	tRCD		= <18000>;
+-	tWR		= <15000>;
+-	tRAS-min	= <42000>;
+-	tRRD		= <10000>;
+-	tWTR		= <7500>;
+-	tXP		= <7500>;
+-	tRTP		= <7500>;
+-	tCKESR		= <15000>;
+-	tDQSCK-max	= <5500>;
+-	tFAW		= <50000>;
+-	tZQCS		= <90000>;
+-	tZQCL		= <360000>;
+-	tZQinit		= <1000000>;
+-	tRAS-max-ns	= <70000>;
+-};
+diff --git a/Documentation/devicetree/bindings/lpddr2/lpddr2.txt b/Documentation/devicetree/bindings/lpddr2/lpddr2.txt
+deleted file mode 100644
+index 58354a075e13..000000000000
+--- a/Documentation/devicetree/bindings/lpddr2/lpddr2.txt
++++ /dev/null
+@@ -1,102 +0,0 @@
+-* LPDDR2 SDRAM memories compliant to JEDEC JESD209-2
+-
+-Required properties:
+-- compatible : Should be one of - "jedec,lpddr2-nvm", "jedec,lpddr2-s2",
+-  "jedec,lpddr2-s4"
+-
+-  "ti,jedec-lpddr2-s2" should be listed if the memory part is LPDDR2-S2 type
+-
+-  "ti,jedec-lpddr2-s4" should be listed if the memory part is LPDDR2-S4 type
+-
+-  "ti,jedec-lpddr2-nvm" should be listed if the memory part is LPDDR2-NVM type
+-
+-- density  : <u32> representing density in Mb (Mega bits)
+-
+-- io-width : <u32> representing bus width. Possible values are 8, 16, and 32
+-
+-Optional properties:
+-
+-The following optional properties represent the minimum value of some AC
+-timing parameters of the DDR device in terms of number of clock cycles.
+-These values shall be obtained from the device data-sheet.
+-- tRRD-min-tck
+-- tWTR-min-tck
+-- tXP-min-tck
+-- tRTP-min-tck
+-- tCKE-min-tck
+-- tRPab-min-tck
+-- tRCD-min-tck
+-- tWR-min-tck
+-- tRASmin-min-tck
+-- tCKESR-min-tck
+-- tFAW-min-tck
+-
+-Child nodes:
+-- The lpddr2 node may have one or more child nodes of type "lpddr2-timings".
+-  "lpddr2-timings" provides AC timing parameters of the device for
+-  a given speed-bin. The user may provide the timings for as many
+-  speed-bins as is required. Please see Documentation/devicetree/
+-  bindings/lpddr2/lpddr2-timings.txt for more information on "lpddr2-timings"
+-
+-Example:
+-
+-elpida_ECB240ABACN : lpddr2 {
+-	compatible	= "Elpida,ECB240ABACN","jedec,lpddr2-s4";
+-	density		= <2048>;
+-	io-width	= <32>;
+-
+-	tRPab-min-tck	= <3>;
+-	tRCD-min-tck	= <3>;
+-	tWR-min-tck	= <3>;
+-	tRASmin-min-tck	= <3>;
+-	tRRD-min-tck	= <2>;
+-	tWTR-min-tck	= <2>;
+-	tXP-min-tck	= <2>;
+-	tRTP-min-tck	= <2>;
+-	tCKE-min-tck	= <3>;
+-	tCKESR-min-tck	= <3>;
+-	tFAW-min-tck	= <8>;
+-
+-	timings_elpida_ECB240ABACN_400mhz: lpddr2-timings@0 {
+-		compatible	= "jedec,lpddr2-timings";
+-		min-freq	= <10000000>;
+-		max-freq	= <400000000>;
+-		tRPab		= <21000>;
+-		tRCD		= <18000>;
+-		tWR		= <15000>;
+-		tRAS-min	= <42000>;
+-		tRRD		= <10000>;
+-		tWTR		= <7500>;
+-		tXP		= <7500>;
+-		tRTP		= <7500>;
+-		tCKESR		= <15000>;
+-		tDQSCK-max	= <5500>;
+-		tFAW		= <50000>;
+-		tZQCS		= <90000>;
+-		tZQCL		= <360000>;
+-		tZQinit		= <1000000>;
+-		tRAS-max-ns	= <70000>;
+-	};
+-
+-	timings_elpida_ECB240ABACN_200mhz: lpddr2-timings@1 {
+-		compatible	= "jedec,lpddr2-timings";
+-		min-freq	= <10000000>;
+-		max-freq	= <200000000>;
+-		tRPab		= <21000>;
+-		tRCD		= <18000>;
+-		tWR		= <15000>;
+-		tRAS-min	= <42000>;
+-		tRRD		= <10000>;
+-		tWTR		= <10000>;
+-		tXP		= <7500>;
+-		tRTP		= <7500>;
+-		tCKESR		= <15000>;
+-		tDQSCK-max	= <5500>;
+-		tFAW		= <50000>;
+-		tZQCS		= <90000>;
+-		tZQCL		= <360000>;
+-		tZQinit		= <1000000>;
+-		tRAS-max-ns	= <70000>;
+-	};
+-
+-}
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9d3a5c54a41d..f306e0458620 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4965,6 +4965,14 @@ F:	include/linux/dma-direct.h
+ F:	include/linux/dma-mapping.h
+ F:	include/linux/dma-noncoherent.h
+ 
++DMC FREQUENCY DRIVER FOR SAMSUNG EXYNOS5422
++M:	Lukasz Luba <l.luba@partner.samsung.com>
++L:	linux-pm@vger.kernel.org
++L:	linux-samsung-soc@vger.kernel.org
++S:	Maintained
++F:	drivers/memory/samsung/exynos5422-dmc.c
++F:	Documentation/devicetree/bindings/memory-controllers/exynos5422-dmc.txt
++
+ DME1737 HARDWARE MONITOR DRIVER
+ M:	Juerg Haefliger <juergh@gmail.com>
+ L:	linux-hwmon@vger.kernel.org
+diff --git a/arch/arm/boot/dts/exynos5.dtsi b/arch/arm/boot/dts/exynos5.dtsi
+index 67f9b4504a42..4801ca759feb 100644
+--- a/arch/arm/boot/dts/exynos5.dtsi
++++ b/arch/arm/boot/dts/exynos5.dtsi
+@@ -35,8 +35,8 @@
+ 		#size-cells = <1>;
+ 		ranges;
+ 
+-		chipid@10000000 {
+-			compatible = "samsung,exynos4210-chipid";
++		chipid: chipid@10000000 {
++			compatible = "samsung,exynos4210-chipid", "syscon";
+ 			reg = <0x10000000 0x100>;
+ 		};
+ 
+diff --git a/arch/arm/boot/dts/exynos5420-peach-pit.dts b/arch/arm/boot/dts/exynos5420-peach-pit.dts
+index 9eb48cabcca4..2bcbdf8a39bf 100644
+--- a/arch/arm/boot/dts/exynos5420-peach-pit.dts
++++ b/arch/arm/boot/dts/exynos5420-peach-pit.dts
+@@ -1065,6 +1065,10 @@
+ 	status = "okay";
+ };
+ 
++&timer {
++	arm,cpu-registers-not-fw-configured;
++};
++
+ &tmu_cpu0 {
+ 	vtmu-supply = <&ldo10_reg>;
+ };
+diff --git a/arch/arm/boot/dts/exynos5420.dtsi b/arch/arm/boot/dts/exynos5420.dtsi
+index 7d51e0f4ab79..4625af8fea76 100644
+--- a/arch/arm/boot/dts/exynos5420.dtsi
++++ b/arch/arm/boot/dts/exynos5420.dtsi
+@@ -175,7 +175,7 @@
+ 		};
+ 
+ 		clock: clock-controller@10010000 {
+-			compatible = "samsung,exynos5420-clock";
++			compatible = "samsung,exynos5420-clock", "syscon";
+ 			reg = <0x10010000 0x30000>;
+ 			#clock-cells = <1>;
+ 		};
+@@ -237,6 +237,32 @@
+ 			status = "disabled";
+ 		};
+ 
++		dmc: memory-controller@10c20000 {
++			compatible = "samsung,exynos5422-dmc";
++			reg = <0x10c20000 0x10000>, <0x10c30000 0x10000>;
++			interrupt-parent = <&combiner>;
++			interrupts = <16 0>, <16 1>;
++			interrupt-names = "drex_0", "drex_1";
++			clocks = <&clock CLK_FOUT_SPLL>,
++				 <&clock CLK_MOUT_SCLK_SPLL>,
++				 <&clock CLK_FF_DOUT_SPLL2>,
++				 <&clock CLK_FOUT_BPLL>,
++				 <&clock CLK_MOUT_BPLL>,
++				 <&clock CLK_SCLK_BPLL>,
++				 <&clock CLK_MOUT_MX_MSPLL_CCORE>,
++				 <&clock CLK_MOUT_MCLK_CDREX>;
++			clock-names = "fout_spll",
++				      "mout_sclk_spll",
++				      "ff_dout_spll2",
++				      "fout_bpll",
++				      "mout_bpll",
++				      "sclk_bpll",
++				      "mout_mx_mspll_ccore",
++				      "mout_mclk_cdrex";
++			samsung,syscon-clk = <&clock>;
++			status = "disabled";
++		};
++
+ 		nocp_mem0_0: nocp@10ca1000 {
+ 			compatible = "samsung,exynos5420-nocp";
+ 			reg = <0x10CA1000 0x200>;
+@@ -273,6 +299,54 @@
+ 			status = "disabled";
+ 		};
+ 
++		ppmu_dmc0_0: ppmu@10d00000 {
++			compatible = "samsung,exynos-ppmu";
++			reg = <0x10d00000 0x2000>;
++			clocks = <&clock CLK_PCLK_PPMU_DREX0_0>;
++			clock-names = "ppmu";
++			events {
++				ppmu_event3_dmc0_0: ppmu-event3-dmc0_0 {
++					event-name = "ppmu-event3-dmc0_0";
++				};
++			};
++		};
++
++		ppmu_dmc0_1: ppmu@10d10000 {
++			compatible = "samsung,exynos-ppmu";
++			reg = <0x10d10000 0x2000>;
++			clocks = <&clock CLK_PCLK_PPMU_DREX0_1>;
++			clock-names = "ppmu";
++			events {
++				ppmu_event3_dmc0_1: ppmu-event3-dmc0_1 {
++					event-name = "ppmu-event3-dmc0_1";
++				};
++			};
++		};
++
++		ppmu_dmc1_0: ppmu@10d60000 {
++			compatible = "samsung,exynos-ppmu";
++			reg = <0x10d60000 0x2000>;
++			clocks = <&clock CLK_PCLK_PPMU_DREX1_0>;
++			clock-names = "ppmu";
++			events {
++				ppmu_event3_dmc1_0: ppmu-event3-dmc1_0 {
++					event-name = "ppmu-event3-dmc1_0";
++				};
++			};
++		};
++
++		ppmu_dmc1_1: ppmu@10d70000 {
++			compatible = "samsung,exynos-ppmu";
++			reg = <0x10d70000 0x2000>;
++			clocks = <&clock CLK_PCLK_PPMU_DREX1_1>;
++			clock-names = "ppmu";
++			events {
++				ppmu_event3_dmc1_1: ppmu-event3-dmc1_1 {
++					event-name = "ppmu-event3-dmc1_1";
++				};
++			};
++		};
++
+ 		gsc_pd: power-domain@10044000 {
+ 			compatible = "samsung,exynos4210-pd";
+ 			reg = <0x10044000 0x20>;
+@@ -670,6 +744,56 @@
+ 			iommus = <&sysmmu_gscl1>;
+ 		};
+ 
++		gpu: gpu@11800000 {
++			compatible = "samsung,exynos5420-mali", "arm,mali-t628";
++			reg = <0x11800000 0x5000>;
++			interrupts = <GIC_SPI 219 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>,
++				     <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "job", "mmu", "gpu";
++
++			clocks = <&clock CLK_G3D>;
++			clock-names = "core";
++			power-domains = <&g3d_pd>;
++			operating-points-v2 = <&gpu_opp_table>;
++
++			status = "disabled";
++			#cooling-cells = <2>;
++
++			gpu_opp_table: opp-table {
++				compatible = "operating-points-v2";
++
++				opp-177000000 {
++					opp-hz = /bits/ 64 <177000000>;
++					opp-microvolt = <812500>;
++				};
++				opp-266000000 {
++					opp-hz = /bits/ 64 <266000000>;
++					opp-microvolt = <862500>;
++				};
++				opp-350000000 {
++					opp-hz = /bits/ 64 <350000000>;
++					opp-microvolt = <912500>;
++				};
++				opp-420000000 {
++					opp-hz = /bits/ 64 <420000000>;
++					opp-microvolt = <962500>;
++				};
++				opp-480000000 {
++					opp-hz = /bits/ 64 <480000000>;
++					opp-microvolt = <1000000>;
++				};
++				opp-543000000 {
++					opp-hz = /bits/ 64 <543000000>;
++					opp-microvolt = <1037500>;
++				};
++				opp-600000000 {
++					opp-hz = /bits/ 64 <600000000>;
++					opp-microvolt = <1150000>;
++				};
++			};
++		};
++
+ 		scaler_0: scaler@12800000 {
+ 			compatible = "samsung,exynos5420-scaler";
+ 			reg = <0x12800000 0x1294>;
+diff --git a/arch/arm/boot/dts/exynos5422-cpus.dtsi b/arch/arm/boot/dts/exynos5422-cpus.dtsi
+index e4a5857c135f..aea3893fed24 100644
+--- a/arch/arm/boot/dts/exynos5422-cpus.dtsi
++++ b/arch/arm/boot/dts/exynos5422-cpus.dtsi
+@@ -26,7 +26,7 @@
+ 			compatible = "arm,cortex-a7";
+ 			reg = <0x100>;
+ 			clocks = <&clock CLK_KFC_CLK>;
+-			clock-frequency = <1000000000>;
++			clock-frequency = <1400000000>;
+ 			cci-control-port = <&cci_control0>;
+ 			operating-points-v2 = <&cluster_a7_opp_table>;
+ 			#cooling-cells = <2>; /* min followed by max */
+@@ -38,7 +38,7 @@
+ 			compatible = "arm,cortex-a7";
+ 			reg = <0x101>;
+ 			clocks = <&clock CLK_KFC_CLK>;
+-			clock-frequency = <1000000000>;
++			clock-frequency = <1400000000>;
+ 			cci-control-port = <&cci_control0>;
+ 			operating-points-v2 = <&cluster_a7_opp_table>;
+ 			#cooling-cells = <2>; /* min followed by max */
+@@ -50,7 +50,7 @@
+ 			compatible = "arm,cortex-a7";
+ 			reg = <0x102>;
+ 			clocks = <&clock CLK_KFC_CLK>;
+-			clock-frequency = <1000000000>;
++			clock-frequency = <1400000000>;
+ 			cci-control-port = <&cci_control0>;
+ 			operating-points-v2 = <&cluster_a7_opp_table>;
+ 			#cooling-cells = <2>; /* min followed by max */
+@@ -62,7 +62,7 @@
+ 			compatible = "arm,cortex-a7";
+ 			reg = <0x103>;
+ 			clocks = <&clock CLK_KFC_CLK>;
+-			clock-frequency = <1000000000>;
++			clock-frequency = <1400000000>;
+ 			cci-control-port = <&cci_control0>;
+ 			operating-points-v2 = <&cluster_a7_opp_table>;
+ 			#cooling-cells = <2>; /* min followed by max */
+@@ -74,7 +74,7 @@
+ 			compatible = "arm,cortex-a15";
+ 			reg = <0x0>;
+ 			clocks = <&clock CLK_ARM_CLK>;
+-			clock-frequency = <1800000000>;
++			clock-frequency = <2000000000>;
+ 			cci-control-port = <&cci_control1>;
+ 			operating-points-v2 = <&cluster_a15_opp_table>;
+ 			#cooling-cells = <2>; /* min followed by max */
+@@ -86,7 +86,7 @@
+ 			compatible = "arm,cortex-a15";
+ 			reg = <0x1>;
+ 			clocks = <&clock CLK_ARM_CLK>;
+-			clock-frequency = <1800000000>;
++			clock-frequency = <2000000000>;
+ 			cci-control-port = <&cci_control1>;
+ 			operating-points-v2 = <&cluster_a15_opp_table>;
+ 			#cooling-cells = <2>; /* min followed by max */
+@@ -98,7 +98,7 @@
+ 			compatible = "arm,cortex-a15";
+ 			reg = <0x2>;
+ 			clocks = <&clock CLK_ARM_CLK>;
+-			clock-frequency = <1800000000>;
++			clock-frequency = <2000000000>;
+ 			cci-control-port = <&cci_control1>;
+ 			operating-points-v2 = <&cluster_a15_opp_table>;
+ 			#cooling-cells = <2>; /* min followed by max */
+@@ -110,7 +110,7 @@
+ 			compatible = "arm,cortex-a15";
+ 			reg = <0x3>;
+ 			clocks = <&clock CLK_ARM_CLK>;
+-			clock-frequency = <1800000000>;
++			clock-frequency = <2000000000>;
+ 			cci-control-port = <&cci_control1>;
+ 			operating-points-v2 = <&cluster_a15_opp_table>;
+ 			#cooling-cells = <2>; /* min followed by max */
+diff --git a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
+index 829147e320e0..b3ed4c6a6567 100644
+--- a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
++++ b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
+@@ -34,6 +34,97 @@
+ 			clock-frequency = <24000000>;
+ 		};
+ 	};
++
++	dmc_opp_table: opp_table2 {
++		compatible = "operating-points-v2";
++
++		opp00 {
++			opp-hz = /bits/ 64 <165000000>;
++			opp-microvolt = <875000>;
++		};
++		opp01 {
++			opp-hz = /bits/ 64 <206000000>;
++			opp-microvolt = <875000>;
++		};
++		opp02 {
++			opp-hz = /bits/ 64 <275000000>;
++			opp-microvolt = <875000>;
++		};
++		opp03 {
++			opp-hz = /bits/ 64 <413000000>;
++			opp-microvolt = <887500>;
++		};
++		opp04 {
++			opp-hz = /bits/ 64 <543000000>;
++			opp-microvolt = <937500>;
++		};
++		opp05 {
++			opp-hz = /bits/ 64 <633000000>;
++			opp-microvolt = <1012500>;
++		};
++		opp06 {
++			opp-hz = /bits/ 64 <728000000>;
++			opp-microvolt = <1037500>;
++		};
++		opp07 {
++			opp-hz = /bits/ 64 <825000000>;
++			opp-microvolt = <1050000>;
++		};
++	};
++
++	samsung_K3QF2F20DB: lpddr3 {
++		compatible	= "samsung,K3QF2F20DB", "jedec,lpddr3";
++		density		= <16384>;
++		io-width	= <32>;
++		#address-cells  = <1>;
++		#size-cells     = <0>;
++
++		tRFC-min-tck		= <17>;
++		tRRD-min-tck		= <2>;
++		tRPab-min-tck		= <2>;
++		tRPpb-min-tck		= <2>;
++		tRCD-min-tck		= <3>;
++		tRC-min-tck		= <6>;
++		tRAS-min-tck		= <5>;
++		tWTR-min-tck		= <2>;
++		tWR-min-tck		= <7>;
++		tRTP-min-tck		= <2>;
++		tW2W-C2C-min-tck	= <0>;
++		tR2R-C2C-min-tck	= <0>;
++		tWL-min-tck		= <8>;
++		tDQSCK-min-tck		= <5>;
++		tRL-min-tck		= <14>;
++		tFAW-min-tck		= <5>;
++		tXSR-min-tck		= <12>;
++		tXP-min-tck		= <2>;
++		tCKE-min-tck		= <2>;
++		tCKESR-min-tck		= <2>;
++		tMRD-min-tck		= <5>;
++
++		timings_samsung_K3QF2F20DB_800mhz: lpddr3-timings@800000000 {
++			compatible	= "jedec,lpddr3-timings";
++			reg		= <800000000>; /* workaround: it shows max-freq */
++			min-freq	= <100000000>;
++			tRFC		= <65000>;
++			tRRD		= <6000>;
++			tRPab		= <12000>;
++			tRPpb		= <12000>;
++			tRCD		= <10000>;
++			tRC		= <33750>;
++			tRAS		= <23000>;
++			tWTR		= <3750>;
++			tWR		= <7500>;
++			tRTP		= <3750>;
++			tW2W-C2C	= <0>;
++			tR2R-C2C	= <0>;
++			tFAW		= <25000>;
++			tXSR		= <70000>;
++			tXP		= <3750>;
++			tCKE		= <3750>;
++			tCKESR		= <3750>;
++			tMRD		= <7000>;
++		};
++	};
+ };
+ 
+ &adc {
+@@ -132,6 +223,15 @@
+ 	cpu-supply = <&buck2_reg>;
+ };
+ 
++&dmc {
++	devfreq-events = <&ppmu_event3_dmc0_0>,	<&ppmu_event3_dmc0_1>,
++			<&ppmu_event3_dmc1_0>, <&ppmu_event3_dmc1_1>;
++	device-handle = <&samsung_K3QF2F20DB>;
++	operating-points-v2 = <&dmc_opp_table>;
++	vdd-supply = <&buck1_reg>;
++	status = "okay";
++};
++
+ &hsi2c_4 {
+ 	status = "okay";
+ 
+@@ -522,7 +622,6 @@
+ 				regulator-name = "vdd_g3d";
+ 				regulator-min-microvolt = <800000>;
+ 				regulator-max-microvolt = <1400000>;
+-				regulator-always-on;
+ 				regulator-boot-on;
+ 
+ 				regulator-state-mem {
+@@ -634,24 +733,50 @@
+ 	};
+ };
+ 
++&ppmu_dmc0_0 {
++	status = "okay";
++};
++
++&ppmu_dmc0_1 {
++	status = "okay";
++};
++
++&ppmu_dmc1_0 {
++	status = "okay";
++};
++
++&ppmu_dmc1_1 {
++	status = "okay";
++};
++
+ &tmu_cpu0 {
+ 	vtmu-supply = <&ldo7_reg>;
++	status = "okay";
+ };
+ 
+ &tmu_cpu1 {
+ 	vtmu-supply = <&ldo7_reg>;
++	status = "okay";
+ };
+ 
+ &tmu_cpu2 {
+ 	vtmu-supply = <&ldo7_reg>;
++	status = "okay";
+ };
+ 
+ &tmu_cpu3 {
+ 	vtmu-supply = <&ldo7_reg>;
++	status = "okay";
+ };
+ 
+ &tmu_gpu {
+ 	vtmu-supply = <&ldo7_reg>;
++	status = "okay";
++};
++
++&gpu {
++	mali-supply = <&buck4_reg>;
++	status = "okay";
+ };
+ 
+ &rtc {
+diff --git a/arch/arm/boot/dts/exynos5422-odroidhc1.dts b/arch/arm/boot/dts/exynos5422-odroidhc1.dts
+index d271e7548826..9a2c3638d95d 100644
+--- a/arch/arm/boot/dts/exynos5422-odroidhc1.dts
++++ b/arch/arm/boot/dts/exynos5422-odroidhc1.dts
+@@ -30,190 +30,27 @@
+ 	thermal-zones {
+ 		cpu0_thermal: cpu0-thermal {
+ 			thermal-sensors = <&tmu_cpu0 0>;
+-			trips {
+-				cpu0_alert0: cpu-alert-0 {
+-					temperature = <70000>; /* millicelsius */
+-					hysteresis = <10000>; /* millicelsius */
+-					type = "active";
+-				};
+-				cpu0_alert1: cpu-alert-1 {
+-					temperature = <85000>; /* millicelsius */
+-					hysteresis = <10000>; /* millicelsius */
+-					type = "active";
+-				};
+-				cpu0_crit0: cpu-crit-0 {
+-					temperature = <120000>; /* millicelsius */
+-					hysteresis = <0>; /* millicelsius */
+-					type = "critical";
+-				};
+-			};
+-
+-			cooling-maps {
+-				/*
+-				 * When reaching cpu0_alert0, reduce CPU
+-				 * by 2 steps. On Exynos5422/5800 that would
+-				 * be: 1600 MHz and 1100 MHz.
+-				 */
+-				map0 {
+-					trip = <&cpu0_alert0>;
+-					cooling-device = <&cpu0 0 2>,
+-							 <&cpu1 0 2>,
+-							 <&cpu2 0 2>,
+-							 <&cpu3 0 2>,
+-							 <&cpu4 0 2>,
+-							 <&cpu5 0 2>,
+-							 <&cpu6 0 2>,
+-							 <&cpu7 0 2>;
+-				};
+-				/*
+-				 * When reaching cpu0_alert1, reduce CPU
+-				 * further, down to 600 MHz (12 steps for big,
+-				 * 7 steps for LITTLE).
+-				 */
+-				map1 {
+-					trip = <&cpu0_alert1>;
+-					cooling-device = <&cpu0 3 7>,
+-							 <&cpu1 3 7>,
+-							 <&cpu2 3 7>,
+-							 <&cpu3 3 7>,
+-							 <&cpu4 3 12>,
+-							 <&cpu5 3 12>,
+-							 <&cpu6 3 12>,
+-							 <&cpu7 3 12>;
+-				};
+-			};
++			#define CPU_THERMAL_ZONE_NUM 0
++			#include "exynos5422-odroidhc1-trip-points.dtsi"
++			#undef CPU_THERMAL_ZONE_NUM
+ 		};
+ 		cpu1_thermal: cpu1-thermal {
+ 			thermal-sensors = <&tmu_cpu1 0>;
+-			trips {
+-				cpu1_alert0: cpu-alert-0 {
+-					temperature = <70000>;
+-					hysteresis = <10000>;
+-					type = "active";
+-				};
+-				cpu1_alert1: cpu-alert-1 {
+-					temperature = <85000>;
+-					hysteresis = <10000>;
+-					type = "active";
+-				};
+-				cpu1_crit0: cpu-crit-0 {
+-					temperature = <120000>;
+-					hysteresis = <0>;
+-					type = "critical";
+-				};
+-			};
+-			cooling-maps {
+-				map0 {
+-					trip = <&cpu1_alert0>;
+-					cooling-device = <&cpu0 0 2>,
+-							 <&cpu1 0 2>,
+-							 <&cpu2 0 2>,
+-							 <&cpu3 0 2>,
+-							 <&cpu4 0 2>,
+-							 <&cpu5 0 2>,
+-							 <&cpu6 0 2>,
+-							 <&cpu7 0 2>;
+-				};
+-				map1 {
+-					trip = <&cpu1_alert1>;
+-					cooling-device = <&cpu0 3 7>,
+-							 <&cpu1 3 7>,
+-							 <&cpu2 3 7>,
+-							 <&cpu3 3 7>,
+-							 <&cpu4 3 12>,
+-							 <&cpu5 3 12>,
+-							 <&cpu6 3 12>,
+-							 <&cpu7 3 12>;
+-				};
+-			};
++			#define CPU_THERMAL_ZONE_NUM 1
++			#include "exynos5422-odroidhc1-trip-points.dtsi"
++			#undef CPU_THERMAL_ZONE_NUM
+ 		};
+ 		cpu2_thermal: cpu2-thermal {
+ 			thermal-sensors = <&tmu_cpu2 0>;
+-			trips {
+-				cpu2_alert0: cpu-alert-0 {
+-					temperature = <70000>;
+-					hysteresis = <10000>;
+-					type = "active";
+-				};
+-				cpu2_alert1: cpu-alert-1 {
+-					temperature = <85000>;
+-					hysteresis = <10000>;
+-					type = "active";
+-				};
+-				cpu2_crit0: cpu-crit-0 {
+-					temperature = <120000>;
+-					hysteresis = <0>;
+-					type = "critical";
+-				};
+-			};
+-			cooling-maps {
+-				map0 {
+-					trip = <&cpu2_alert0>;
+-					cooling-device = <&cpu0 0 2>,
+-							 <&cpu1 0 2>,
+-							 <&cpu2 0 2>,
+-							 <&cpu3 0 2>,
+-							 <&cpu4 0 2>,
+-							 <&cpu5 0 2>,
+-							 <&cpu6 0 2>,
+-							 <&cpu7 0 2>;
+-				};
+-				map1 {
+-					trip = <&cpu2_alert1>;
+-					cooling-device = <&cpu0 3 7>,
+-							 <&cpu1 3 7>,
+-							 <&cpu2 3 7>,
+-							 <&cpu3 3 7>,
+-							 <&cpu4 3 12>,
+-							 <&cpu5 3 12>,
+-							 <&cpu6 3 12>,
+-							 <&cpu7 3 12>;
+-				};
+-			};
++			#define CPU_THERMAL_ZONE_NUM 2
++			#include "exynos5422-odroidhc1-trip-points.dtsi"
++			#undef CPU_THERMAL_ZONE_NUM
+ 		};
+ 		cpu3_thermal: cpu3-thermal {
+ 			thermal-sensors = <&tmu_cpu3 0>;
+-			trips {
+-				cpu3_alert0: cpu-alert-0 {
+-					temperature = <70000>;
+-					hysteresis = <10000>;
+-					type = "active";
+-				};
+-				cpu3_alert1: cpu-alert-1 {
+-					temperature = <85000>;
+-					hysteresis = <10000>;
+-					type = "active";
+-				};
+-				cpu3_crit0: cpu-crit-0 {
+-					temperature = <120000>;
+-					hysteresis = <0>;
+-					type = "critical";
+-				};
+-			};
+-			cooling-maps {
+-				map0 {
+-					trip = <&cpu3_alert0>;
+-					cooling-device = <&cpu0 0 2>,
+-							 <&cpu1 0 2>,
+-							 <&cpu2 0 2>,
+-							 <&cpu3 0 2>,
+-							 <&cpu4 0 2>,
+-							 <&cpu5 0 2>,
+-							 <&cpu6 0 2>,
+-							 <&cpu7 0 2>;
+-				};
+-				map1 {
+-					trip = <&cpu3_alert1>;
+-					cooling-device = <&cpu0 3 7>,
+-							 <&cpu1 3 7>,
+-							 <&cpu2 3 7>,
+-							 <&cpu3 3 7>,
+-							 <&cpu4 3 12>,
+-							 <&cpu5 3 12>,
+-							 <&cpu6 3 12>,
+-							 <&cpu7 3 12>;
+-				};
+-			};
++			#define CPU_THERMAL_ZONE_NUM 3
++			#include "exynos5422-odroidhc1-trip-points.dtsi"
++			#undef CPU_THERMAL_ZONE_NUM
+ 		};
+ 	};
+ 
+diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
+index 838872037493..37c609c66c54 100644
+--- a/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
++++ b/arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi
+@@ -34,6 +34,13 @@
+ 		};
+ 	};
+ 
++	gpiomem {
++		compatible = "samsung,exynos-gpiomem";
++		reg = <0x13400000 0x1000>,
++		      <0x14010000 0x1000>;
++		status = "okay";
++	};
++
+ 	emmc_pwrseq: pwrseq {
+ 		pinctrl-0 = <&emmc_nrst_pin>;
+ 		pinctrl-names = "default";
+@@ -45,317 +52,33 @@
+ 		compatible = "pwm-fan";
+ 		pwms = <&pwm 0 20972 0>;
+ 		#cooling-cells = <2>;
+-		cooling-levels = <0 130 170 230>;
++		cooling-levels = <0 120 180 240>;
+ 	};
+ 
+ 	thermal-zones {
+ 		cpu0_thermal: cpu0-thermal {
+ 			thermal-sensors = <&tmu_cpu0 0>;
+-			polling-delay-passive = <250>;
+-			polling-delay = <0>;
+-			trips {
+-				cpu0_alert0: cpu-alert-0 {
+-					temperature = <50000>; /* millicelsius */
+-					hysteresis = <5000>; /* millicelsius */
+-					type = "active";
+-				};
+-				cpu0_alert1: cpu-alert-1 {
+-					temperature = <60000>; /* millicelsius */
+-					hysteresis = <5000>; /* millicelsius */
+-					type = "active";
+-				};
+-				cpu0_alert2: cpu-alert-2 {
+-					temperature = <70000>; /* millicelsius */
+-					hysteresis = <5000>; /* millicelsius */
+-					type = "active";
+-				};
+-				cpu0_crit0: cpu-crit-0 {
+-					temperature = <120000>; /* millicelsius */
+-					hysteresis = <0>; /* millicelsius */
+-					type = "critical";
+-				};
+-				/*
+-				 * Exynos542x supports only 4 trip-points
+-				 * so for these polling mode is required.
+-				 * Start polling at temperature level of last
+-				 * interrupt-driven trip: cpu0_alert2
+-				 */
+-				cpu0_alert3: cpu-alert-3 {
+-					temperature = <70000>; /* millicelsius */
+-					hysteresis = <10000>; /* millicelsius */
+-					type = "passive";
+-				};
+-				cpu0_alert4: cpu-alert-4 {
+-					temperature = <85000>; /* millicelsius */
+-					hysteresis = <10000>; /* millicelsius */
+-					type = "passive";
+-				};
+-			};
+-			cooling-maps {
+-				map0 {
+-					trip = <&cpu0_alert0>;
+-					cooling-device = <&fan0 0 1>;
+-				};
+-				map1 {
+-					trip = <&cpu0_alert1>;
+-					cooling-device = <&fan0 1 2>;
+-				};
+-				map2 {
+-					trip = <&cpu0_alert2>;
+-					cooling-device = <&fan0 2 3>;
+-				};
+-				/*
+-				 * When reaching cpu0_alert3, reduce CPU
+-				 * by 2 steps. On Exynos5422/5800 that would
+-				 * be: 1600 MHz and 1100 MHz.
+-				 */
+-				map3 {
+-					trip = <&cpu0_alert3>;
+-					cooling-device = <&cpu0 0 2>,
+-							 <&cpu1 0 2>,
+-							 <&cpu2 0 2>,
+-							 <&cpu3 0 2>,
+-							 <&cpu4 0 2>,
+-							 <&cpu5 0 2>,
+-							 <&cpu6 0 2>,
+-							 <&cpu7 0 2>;
+-				};
+-				/*
+-				 * When reaching cpu0_alert4, reduce CPU
+-				 * further, down to 600 MHz (12 steps for big,
+-				 * 7 steps for LITTLE).
+-				 */
+-				map4 {
+-					trip = <&cpu0_alert4>;
+-					cooling-device = <&cpu0 3 7>,
+-							 <&cpu1 3 7>,
+-							 <&cpu2 3 7>,
+-							 <&cpu3 3 7>,
+-							 <&cpu4 3 12>,
+-							 <&cpu5 3 12>,
+-							 <&cpu6 3 12>,
+-							 <&cpu7 3 12>;
+-				};
+-			};
++			#define CPU_THERMAL_ZONE_NUM 0
++			#include "exynos5422-odroidxu3-trip-points.dtsi"
++			#undef CPU_THERMAL_ZONE_NUM
+ 		};
+ 		cpu1_thermal: cpu1-thermal {
+ 			thermal-sensors = <&tmu_cpu1 0>;
+-			polling-delay-passive = <250>;
+-			polling-delay = <0>;
+-			trips {
+-				cpu1_alert0: cpu-alert-0 {
+-					temperature = <50000>;
+-					hysteresis = <5000>;
+-					type = "active";
+-				};
+-				cpu1_alert1: cpu-alert-1 {
+-					temperature = <60000>;
+-					hysteresis = <5000>;
+-					type = "active";
+-				};
+-				cpu1_alert2: cpu-alert-2 {
+-					temperature = <70000>;
+-					hysteresis = <5000>;
+-					type = "active";
+-				};
+-				cpu1_crit0: cpu-crit-0 {
+-					temperature = <120000>;
+-					hysteresis = <0>;
+-					type = "critical";
+-				};
+-				cpu1_alert3: cpu-alert-3 {
+-					temperature = <70000>;
+-					hysteresis = <10000>;
+-					type = "passive";
+-				};
+-				cpu1_alert4: cpu-alert-4 {
+-					temperature = <85000>;
+-					hysteresis = <10000>;
+-					type = "passive";
+-				};
+-			};
+-			cooling-maps {
+-				map0 {
+-					trip = <&cpu1_alert0>;
+-					cooling-device = <&fan0 0 1>;
+-				};
+-				map1 {
+-					trip = <&cpu1_alert1>;
+-					cooling-device = <&fan0 1 2>;
+-				};
+-				map2 {
+-					trip = <&cpu1_alert2>;
+-					cooling-device = <&fan0 2 3>;
+-				};
+-				map3 {
+-					trip = <&cpu1_alert3>;
+-					cooling-device = <&cpu0 0 2>,
+-							 <&cpu1 0 2>,
+-							 <&cpu2 0 2>,
+-							 <&cpu3 0 2>,
+-							 <&cpu4 0 2>,
+-							 <&cpu5 0 2>,
+-							 <&cpu6 0 2>,
+-							 <&cpu7 0 2>;
+-				};
+-				map4 {
+-					trip = <&cpu1_alert4>;
+-					cooling-device = <&cpu0 3 7>,
+-							 <&cpu1 3 7>,
+-							 <&cpu2 3 7>,
+-							 <&cpu3 3 7>,
+-							 <&cpu4 3 12>,
+-							 <&cpu5 3 12>,
+-							 <&cpu6 3 12>,
+-							 <&cpu7 3 12>;
+-				};
+-			};
++			#define CPU_THERMAL_ZONE_NUM 1
++			#include "exynos5422-odroidxu3-trip-points.dtsi"
++			#undef CPU_THERMAL_ZONE_NUM
+ 		};
+ 		cpu2_thermal: cpu2-thermal {
+ 			thermal-sensors = <&tmu_cpu2 0>;
+-			polling-delay-passive = <250>;
+-			polling-delay = <0>;
+-			trips {
+-				cpu2_alert0: cpu-alert-0 {
+-					temperature = <50000>;
+-					hysteresis = <5000>;
+-					type = "active";
+-				};
+-				cpu2_alert1: cpu-alert-1 {
+-					temperature = <60000>;
+-					hysteresis = <5000>;
+-					type = "active";
+-				};
+-				cpu2_alert2: cpu-alert-2 {
+-					temperature = <70000>;
+-					hysteresis = <5000>;
+-					type = "active";
+-				};
+-				cpu2_crit0: cpu-crit-0 {
+-					temperature = <120000>;
+-					hysteresis = <0>;
+-					type = "critical";
+-				};
+-				cpu2_alert3: cpu-alert-3 {
+-					temperature = <70000>;
+-					hysteresis = <10000>;
+-					type = "passive";
+-				};
+-				cpu2_alert4: cpu-alert-4 {
+-					temperature = <85000>;
+-					hysteresis = <10000>;
+-					type = "passive";
+-				};
+-			};
+-			cooling-maps {
+-				map0 {
+-					trip = <&cpu2_alert0>;
+-					cooling-device = <&fan0 0 1>;
+-				};
+-				map1 {
+-					trip = <&cpu2_alert1>;
+-					cooling-device = <&fan0 1 2>;
+-				};
+-				map2 {
+-					trip = <&cpu2_alert2>;
+-					cooling-device = <&fan0 2 3>;
+-				};
+-				map3 {
+-					trip = <&cpu2_alert3>;
+-					cooling-device = <&cpu0 0 2>,
+-							 <&cpu1 0 2>,
+-							 <&cpu2 0 2>,
+-							 <&cpu3 0 2>,
+-							 <&cpu4 0 2>,
+-							 <&cpu5 0 2>,
+-							 <&cpu6 0 2>,
+-							 <&cpu7 0 2>;
+-				};
+-				map4 {
+-					trip = <&cpu2_alert4>;
+-					cooling-device = <&cpu0 3 7>,
+-							 <&cpu1 3 7>,
+-							 <&cpu2 3 7>,
+-							 <&cpu3 3 7>,
+-							 <&cpu4 3 12>,
+-							 <&cpu5 3 12>,
+-							 <&cpu6 3 12>,
+-							 <&cpu7 3 12>;
+-				};
+-			};
++			#define CPU_THERMAL_ZONE_NUM 2
++			#include "exynos5422-odroidxu3-trip-points.dtsi"
++			#undef CPU_THERMAL_ZONE_NUM
+ 		};
+ 		cpu3_thermal: cpu3-thermal {
+ 			thermal-sensors = <&tmu_cpu3 0>;
+-			polling-delay-passive = <250>;
+-			polling-delay = <0>;
+-			trips {
+-				cpu3_alert0: cpu-alert-0 {
+-					temperature = <50000>;
+-					hysteresis = <5000>;
+-					type = "active";
+-				};
+-				cpu3_alert1: cpu-alert-1 {
+-					temperature = <60000>;
+-					hysteresis = <5000>;
+-					type = "active";
+-				};
+-				cpu3_alert2: cpu-alert-2 {
+-					temperature = <70000>;
+-					hysteresis = <5000>;
+-					type = "active";
+-				};
+-				cpu3_crit0: cpu-crit-0 {
+-					temperature = <120000>;
+-					hysteresis = <0>;
+-					type = "critical";
+-				};
+-				cpu3_alert3: cpu-alert-3 {
+-					temperature = <70000>;
+-					hysteresis = <10000>;
+-					type = "passive";
+-				};
+-				cpu3_alert4: cpu-alert-4 {
+-					temperature = <85000>;
+-					hysteresis = <10000>;
+-					type = "passive";
+-				};
+-			};
+-			cooling-maps {
+-				map0 {
+-					trip = <&cpu3_alert0>;
+-					cooling-device = <&fan0 0 1>;
+-				};
+-				map1 {
+-					trip = <&cpu3_alert1>;
+-					cooling-device = <&fan0 1 2>;
+-				};
+-				map2 {
+-					trip = <&cpu3_alert2>;
+-					cooling-device = <&fan0 2 3>;
+-				};
+-				map3 {
+-					trip = <&cpu3_alert3>;
+-					cooling-device = <&cpu0 0 2>,
+-							 <&cpu1 0 2>,
+-							 <&cpu2 0 2>,
+-							 <&cpu3 0 2>,
+-							 <&cpu4 0 2>,
+-							 <&cpu5 0 2>,
+-							 <&cpu6 0 2>,
+-							 <&cpu7 0 2>;
+-				};
+-				map4 {
+-					trip = <&cpu3_alert4>;
+-					cooling-device = <&cpu0 3 7>,
+-							 <&cpu1 3 7>,
+-							 <&cpu2 3 7>,
+-							 <&cpu3 3 7>,
+-							 <&cpu4 3 12>,
+-							 <&cpu5 3 12>,
+-							 <&cpu6 3 12>,
+-							 <&cpu7 3 12>;
+-				};
+-			};
++			#define CPU_THERMAL_ZONE_NUM 3
++			#include "exynos5422-odroidxu3-trip-points.dtsi"
++			#undef CPU_THERMAL_ZONE_NUM
+ 		};
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/exynos5422-odroidxu3-lite.dts b/arch/arm/boot/dts/exynos5422-odroidxu3-lite.dts
+index c19b5a51ca44..a0d5e370da3e 100644
+--- a/arch/arm/boot/dts/exynos5422-odroidxu3-lite.dts
++++ b/arch/arm/boot/dts/exynos5422-odroidxu3-lite.dts
+@@ -18,6 +18,15 @@
+ 	compatible = "hardkernel,odroid-xu3-lite", "samsung,exynos5800", "samsung,exynos5";
+ };
+ 
++&cluster_a15_opp_table {
++	/delete-node/opp-2000000000;
++	/delete-node/opp-1900000000;
++};
++
++&cluster_a7_opp_table {
++	/delete-node/opp-1400000000;
++};
++
+ &arm_a7_pmu {
+ 	status = "disabled";
+ };
+@@ -26,6 +35,10 @@
+ 	status = "disabled";
+ };
+ 
++&chipid {
++	samsung,asv-bin = <2>;
++};
++
+ &pwm {
+ 	/*
+ 	 * PWM 0 -- fan
+diff --git a/arch/arm/boot/dts/exynos5422-odroidxu4.dts b/arch/arm/boot/dts/exynos5422-odroidxu4.dts
+index 892d389d6d09..6e7da591654f 100644
+--- a/arch/arm/boot/dts/exynos5422-odroidxu4.dts
++++ b/arch/arm/boot/dts/exynos5422-odroidxu4.dts
+@@ -11,6 +11,7 @@
+ /dts-v1/;
+ #include <dt-bindings/sound/samsung-i2s.h>
+ #include "exynos5422-odroidxu3-common.dtsi"
++#include <dt-bindings/gpio/gpio.h>
+ 
+ / {
+ 	model = "Hardkernel Odroid XU4";
+@@ -67,6 +68,49 @@
+ 			sound-dai = <&hdmi>;
+ 		};
+ 	};
++
++	hktft35: hktft35 {
++		status = "disabled";
++		compatible = "odroid,hktft35";
++		pinctrl-names = "default";
++		pinctrl-0 = <&hktft35_pins>;
++
++		rotate = <270>;
++		bgr;
++		fps = <20>;
++		bpp = <16>;
++		reset-gpios = <&gpa0 3 GPIO_ACTIVE_HIGH>;
++		dc-gpios = <&gpx2 4 GPIO_ACTIVE_HIGH>;
++		wr-gpios = <&gpa2 5 GPIO_ACTIVE_HIGH>;
++		cs-gpios = <&gpa0 2 GPIO_ACTIVE_HIGH>;
++		led-gpios = <&gpx2 7 GPIO_ACTIVE_HIGH>;
++		db-gpios = <&gpx1 7 GPIO_ACTIVE_HIGH>,
++			   <&gpx2 0 GPIO_ACTIVE_HIGH>,
++			   <&gpx1 3 GPIO_ACTIVE_HIGH>,
++			   <&gpa2 4 GPIO_ACTIVE_HIGH>,
++			   <&gpa2 6 GPIO_ACTIVE_HIGH>,
++			   <&gpa2 7 GPIO_ACTIVE_HIGH>,
++			   <&gpx1 6 GPIO_ACTIVE_HIGH>,
++			   <&gpx1 5 GPIO_ACTIVE_HIGH>;
++		debug = <0>;
++
++		hktft35_pins: hktft35_pins {
++			samsung,pins = "gpa0-3", /* reset */
++				       "gpx2-4", /* dc */
++				       "gpa2-5", /* wr */
++				       "gpa0-2", /* cs */
++				       "gpx2-7", /* led */
++				       "gpx1-7", /* db00 */
++				       "gpx2-0", /* db01 */
++				       "gpx1-3", /* db02 */
++				       "gpa2-4", /* db03 */
++				       "gpa2-6", /* db04 */
++				       "gpa2-7", /* db05 */
++				       "gpx1-6", /* db06 */
++				       "gpx1-5"; /* db07 */
++			samsung,pin-function = <1>;
++		};
++	};
+ };
+ 
+ &clock_audss {
+@@ -96,3 +140,93 @@
+ &usbdrd_dwc3_1 {
+ 	dr_mode = "host";
+ };
++
++/* i2c@12C70000 */
++&i2c_1 {
++	status = "okay";
++	samsung,i2c-max-bus-freq = <400000>;
++};
++
++/* i2c@12cb0000 */
++&hsi2c_5 {
++	status = "okay";
++	samsung,hs-mode;
++	clock-frequency = <400000>;
++};
++
++&spi_1 {
++	status = "okay";
++	samsung,spi-src-clk = <0>;
++	num-cs = <2>;
++	cs-gpios = <&gpa2 5 GPIO_ACTIVE_HIGH>, <&gpx2 1 GPIO_ACTIVE_HIGH>;
++
++	spidev: spidev@0 {
++		status = "okay";
++		reg = <0>;
++		compatible = "odroid,spidev";
++		spi-max-frequency = <1000000>;
++
++		controller-data {
++			cs-gpio = <&gpa2 5 GPIO_ACTIVE_HIGH>;
++			samsung,spi-feedback-delay = <0>;
++		};
++	};
++
++	hktft_cs_ogst: hktft_cs_ogst@0 {
++		status = "disabled";
++		compatible = "odroid,hktft32";
++		reg = <0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&hktft_cs_ogst_pins>;
++
++		spi-max-frequency = <40000000>;
++		rotate = <270>;
++		bgr;
++		backlight;
++		fps = <20>;
++		bpp = <16>;
++		reset-gpios = <&gpx1 5 GPIO_ACTIVE_HIGH>;
++		dc-gpios = <&gpx1 6 GPIO_ACTIVE_HIGH>;
++		led-gpios = <&gpx1 2 GPIO_ACTIVE_HIGH>;
++		debug = <0>;
++
++		hktft_cs_ogst_pins: hktft_cs_ogst_pins {
++			samsung,pins = "gpx1-5", /* reset */
++				       "gpx1-6", /* dc */
++				       "gpx1-2"; /* led */
++		};
++
++		controller-data {
++			cs-gpio = <&gpa2 5 GPIO_ACTIVE_HIGH>;
++			samsung,spi-feedback-delay = <0>;
++		};
++	};
++
++	hktft32: hktft32@0 {
++		status = "disabled";
++		compatible = "odroid,hktft32";
++		reg = <0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&hktft32_pins>;
++
++		spi-max-frequency = <40000000>;
++		rotate = <90>;
++		bgr;
++		backlight;
++		fps = <20>;
++		bpp = <16>;
++		reset-gpios = <&gpx1 5 GPIO_ACTIVE_HIGH>;
++		dc-gpios = <&gpx1 6 GPIO_ACTIVE_HIGH>;
++		debug = <0>;
++
++		hktft32_pins: hktft32_pins {
++			samsung,pins = "gpx1-5", /* reset */
++				       "gpx1-6"; /* dc */
++		};
++
++		controller-data {
++			cs-gpio = <&gpa2 5 GPIO_ACTIVE_HIGH>;
++			samsung,spi-feedback-delay = <0>;
++		};
++	};
++};
+diff --git a/arch/arm/boot/dts/exynos54xx.dtsi b/arch/arm/boot/dts/exynos54xx.dtsi
+index 9c3b63b7cac6..02d34957cd83 100644
+--- a/arch/arm/boot/dts/exynos54xx.dtsi
++++ b/arch/arm/boot/dts/exynos54xx.dtsi
+@@ -45,6 +45,15 @@
+ 		status = "disabled";
+ 	};
+ 
++	timer: timer {
++		compatible = "arm,armv7-timer";
++		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>,
++			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_LOW)>;
++		clock-frequency = <24000000>;
++	};
++
+ 	soc: soc {
+ 		sysram@2020000 {
+ 			compatible = "mmio-sram";
+diff --git a/arch/arm/boot/dts/exynos5800-peach-pi.dts b/arch/arm/boot/dts/exynos5800-peach-pi.dts
+index 4398f2d1fe88..60ca3d685247 100644
+--- a/arch/arm/boot/dts/exynos5800-peach-pi.dts
++++ b/arch/arm/boot/dts/exynos5800-peach-pi.dts
+@@ -1034,6 +1034,10 @@
+ 	status = "okay";
+ };
+ 
++&timer {
++	arm,cpu-registers-not-fw-configured;
++};
++
+ &tmu_cpu0 {
+ 	vtmu-supply = <&ldo10_reg>;
+ };
+diff --git a/arch/arm/boot/dts/exynos5800.dtsi b/arch/arm/boot/dts/exynos5800.dtsi
+index de639eecc5c9..5aac4de5d01a 100644
+--- a/arch/arm/boot/dts/exynos5800.dtsi
++++ b/arch/arm/boot/dts/exynos5800.dtsi
+@@ -17,39 +17,52 @@
+ };
+ 
+ &clock {
+-	compatible = "samsung,exynos5800-clock";
++	compatible = "samsung,exynos5800-clock", "syscon";
+ };
+ 
+ &cluster_a15_opp_table {
+-	opp-1700000000 {
++	opp-2000000000 {
++		opp-hz = /bits/ 64 <2000000000>;
++		opp-microvolt = <1312500>;
++		clock-latency-ns = <140000>;
++	};
++	opp-1900000000 {
++		opp-hz = /bits/64 <1900000000>;
+ 		opp-microvolt = <1250000>;
++		clock-latency-ns = <140000>;
++	};
++	opp-1800000000 {
++		opp-microvolt = <1200000>;
++	};
++	opp-1700000000 {
++		opp-microvolt = <1162500>;
+ 	};
+ 	opp-1600000000 {
+-		opp-microvolt = <1250000>;
++		opp-microvolt = <1125000>;
+ 	};
+ 	opp-1500000000 {
+-		opp-microvolt = <1100000>;
++		opp-microvolt = <1087500>;
+ 	};
+ 	opp-1400000000 {
+-		opp-microvolt = <1100000>;
++		opp-microvolt = <1062500>;
+ 	};
+ 	opp-1300000000 {
+-		opp-microvolt = <1100000>;
++		opp-microvolt = <1050000>;
+ 	};
+ 	opp-1200000000 {
+-		opp-microvolt = <1000000>;
++		opp-microvolt = <1050000>;
+ 	};
+ 	opp-1100000000 {
+ 		opp-microvolt = <1000000>;
+ 	};
+ 	opp-1000000000 {
+-		opp-microvolt = <1000000>;
++		opp-microvolt = <975000>;
+ 	};
+ 	opp-900000000 {
+-		opp-microvolt = <1000000>;
++		opp-microvolt = <950000>;
+ 	};
+ 	opp-800000000 {
+-		opp-microvolt = <900000>;
++		opp-microvolt = <925000>;
+ 	};
+ 	opp-700000000 {
+ 		opp-microvolt = <900000>;
+@@ -82,38 +95,43 @@
+ };
+ 
+ &cluster_a7_opp_table {
++	opp-1400000000 {
++		opp-hz = /bits/ 64 <1400000000>;
++		opp-microvolt = <1275000>;
++		clock-latency-ns = <140000>;
++	};
+ 	opp-1300000000 {
+-		opp-microvolt = <1250000>;
++		opp-microvolt = <1225000>;
+ 	};
+ 	opp-1200000000 {
+-		opp-microvolt = <1250000>;
++		opp-microvolt = <1175000>;
+ 	};
+ 	opp-1100000000 {
+-		opp-microvolt = <1250000>;
++		opp-microvolt = <1137500>;
+ 	};
+ 	opp-1000000000 {
+ 		opp-microvolt = <1100000>;
+ 	};
+ 	opp-900000000 {
+-		opp-microvolt = <1100000>;
++		opp-microvolt = <1062500>;
+ 	};
+ 	opp-800000000 {
+-		opp-microvolt = <1100000>;
++		opp-microvolt = <1025000>;
+ 	};
+ 	opp-700000000 {
+-		opp-microvolt = <1000000>;
++		opp-microvolt = <987500>;
+ 	};
+ 	opp-600000000 {
+-		opp-microvolt = <1000000>;
++		opp-microvolt = <950000>;
+ 	};
+ 	opp-500000000 {
+ 		opp-hz = /bits/ 64 <500000000>;
+-		opp-microvolt = <1000000>;
++		opp-microvolt = <900000>;
+ 		clock-latency-ns = <140000>;
+ 	};
+ 	opp-400000000 {
+ 		opp-hz = /bits/ 64 <400000000>;
+-		opp-microvolt = <1000000>;
++		opp-microvolt = <900000>;
+ 		clock-latency-ns = <140000>;
+ 	};
+ 	opp-300000000 {
+diff --git a/arch/arm/configs/exynos_defconfig b/arch/arm/configs/exynos_defconfig
+index 08db1c83eb2d..3d9a7b70fa34 100644
+--- a/arch/arm/configs/exynos_defconfig
++++ b/arch/arm/configs/exynos_defconfig
+@@ -294,6 +294,7 @@ CONFIG_DEVFREQ_GOV_PERFORMANCE=y
+ CONFIG_DEVFREQ_GOV_POWERSAVE=y
+ CONFIG_DEVFREQ_GOV_USERSPACE=y
+ CONFIG_ARM_EXYNOS_BUS_DEVFREQ=y
++CONFIG_EXYNOS5422_DMC=y
+ CONFIG_DEVFREQ_EVENT_EXYNOS_NOCP=y
+ CONFIG_EXTCON=y
+ CONFIG_EXTCON_MAX14577=y
+diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
+index d0a464e317ea..7e66d1735a3c 100644
+--- a/arch/arm/kernel/setup.c
++++ b/arch/arm/kernel/setup.c
+@@ -90,7 +90,7 @@ EXPORT_SYMBOL(cacheid);
+ 
+ unsigned int __atags_pointer __initdata;
+ 
+-unsigned int system_rev;
++unsigned int system_rev = 0x0100;
+ EXPORT_SYMBOL(system_rev);
+ 
+ const char *system_serial;
+diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+index 4b0bab2607e4..46e1be9e57a8 100644
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -240,6 +240,10 @@ int __cpu_disable(void)
+ 	if (ret)
+ 		return ret;
+ 
++#ifdef CONFIG_GENERIC_ARCH_TOPOLOGY
++	remove_cpu_topology(cpu);
++#endif
++
+ 	/*
+ 	 * Take this CPU offline.  Once we clear this, we can't return,
+ 	 * and we must not schedule until we're ready to give up the cpu.
+diff --git a/arch/arm/kernel/topology.c b/arch/arm/kernel/topology.c
+index 5b9faba03afb..8d2e61d9e7a6 100644
+--- a/arch/arm/kernel/topology.c
++++ b/arch/arm/kernel/topology.c
+@@ -196,9 +196,8 @@ void store_cpu_topology(unsigned int cpuid)
+ 	struct cpu_topology *cpuid_topo = &cpu_topology[cpuid];
+ 	unsigned int mpidr;
+ 
+-	/* If the cpu topology has been already set, just return */
+-	if (cpuid_topo->core_id != -1)
+-		return;
++	if (cpuid_topo->package_id != -1)
++		goto topology_populated;
+ 
+ 	mpidr = read_cpuid_mpidr();
+ 
+@@ -231,14 +230,15 @@ void store_cpu_topology(unsigned int cpuid)
+ 		cpuid_topo->package_id = -1;
+ 	}
+ 
+-	update_siblings_masks(cpuid);
+-
+ 	update_cpu_capacity(cpuid);
+ 
+ 	pr_info("CPU%u: thread %d, cpu %d, socket %d, mpidr %x\n",
+ 		cpuid, cpu_topology[cpuid].thread_id,
+ 		cpu_topology[cpuid].core_id,
+ 		cpu_topology[cpuid].package_id, mpidr);
++
++topology_populated:
++	update_siblings_masks(cpuid);
+ }
+ 
+ static inline int cpu_corepower_flags(void)
+diff --git a/arch/arm/mach-exynos/Kconfig b/arch/arm/mach-exynos/Kconfig
+index 9dab1f50a02f..4ef56571145b 100644
+--- a/arch/arm/mach-exynos/Kconfig
++++ b/arch/arm/mach-exynos/Kconfig
+@@ -13,6 +13,7 @@ menuconfig ARCH_EXYNOS
+ 	select ARM_AMBA
+ 	select ARM_GIC
+ 	select COMMON_CLK_SAMSUNG
++	select EXYNOS_ASV
+ 	select EXYNOS_CHIPID
+ 	select EXYNOS_THERMAL
+ 	select EXYNOS_PMU
+diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+index 7d042d5c43e3..ebcbe16b8211 100644
+--- a/arch/arm/mm/dma-mapping.c
++++ b/arch/arm/mm/dma-mapping.c
+@@ -340,7 +340,7 @@ static void *__alloc_remap_buffer(struct device *dev, size_t size, gfp_t gfp,
+ 				 pgprot_t prot, struct page **ret_page,
+ 				 const void *caller, bool want_vaddr);
+ 
+-#define DEFAULT_DMA_COHERENT_POOL_SIZE	SZ_256K
++#define DEFAULT_DMA_COHERENT_POOL_SIZE	SZ_2M
+ static struct gen_pool *atomic_pool __ro_after_init;
+ 
+ static size_t atomic_pool_size __initdata = DEFAULT_DMA_COHERENT_POOL_SIZE;
+@@ -593,7 +593,8 @@ static inline pgprot_t __get_dma_pgprot(unsigned long attrs, pgprot_t prot)
+ {
+ 	prot = (attrs & DMA_ATTR_WRITE_COMBINE) ?
+ 			pgprot_writecombine(prot) :
+-			pgprot_dmacoherent(prot);
++		(attrs & DMA_ATTR_NON_CONSISTENT) ?
++			prot : pgprot_dmacoherent(prot);
+ 	return prot;
+ }
+ 
+diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
+index df0fc997dc3e..6fbe5ce36a9c 100644
+--- a/drivers/char/Kconfig
++++ b/drivers/char/Kconfig
+@@ -535,6 +535,15 @@ config ADI
+ 	  and SSM (Silicon Secured Memory).  Intended consumers of this
+ 	  driver include crash and makedumpfile.
+ 
++config EXYNOS_GPIOMEM
++	tristate "/dev/gpiomem rootless GPIO access via mmap() on the EXYNOS"
++	default m
++	help
++	  Provides users with root-free access to the GPIO registers
++	  on EXYNOS. Calling mmap(/dev/gpiomem) will map the GPIO register
++	  page to the user's pointer. This drvier can allow to access gpio
++	  memory area in user account.
++
+ endmenu
+ 
+ config RANDOM_TRUST_CPU
+diff --git a/drivers/char/Makefile b/drivers/char/Makefile
+index 7c5ea6f9df14..6e3a5e4b6163 100644
+--- a/drivers/char/Makefile
++++ b/drivers/char/Makefile
+@@ -52,3 +52,4 @@ js-rtc-y = rtc.o
+ obj-$(CONFIG_XILLYBUS)		+= xillybus/
+ obj-$(CONFIG_POWERNV_OP_PANEL)	+= powernv-op-panel.o
+ obj-$(CONFIG_ADI)		+= adi.o
++obj-$(CONFIG_EXYNOS_GPIOMEM)	+= exynos-gpiomem.o
+diff --git a/drivers/clk/samsung/clk-exynos5420.c b/drivers/clk/samsung/clk-exynos5420.c
+index 31466cd1842f..89126ba66995 100644
+--- a/drivers/clk/samsung/clk-exynos5420.c
++++ b/drivers/clk/samsung/clk-exynos5420.c
+@@ -165,6 +165,8 @@ static const unsigned long exynos5x_clk_regs[] __initconst = {
+ 	GATE_BUS_CPU,
+ 	GATE_SCLK_CPU,
+ 	CLKOUT_CMU_CPU,
++	APLL_CON0,
++	KPLL_CON0,
+ 	CPLL_CON0,
+ 	DPLL_CON0,
+ 	EPLL_CON0,
+@@ -611,7 +613,8 @@ static const struct samsung_mux_clock exynos5x_mux_clks[] __initconst = {
+ 	MUX(0, "mout_aclk66", mout_group1_p, SRC_TOP1, 8, 2),
+ 	MUX(0, "mout_aclk166", mout_group1_p, SRC_TOP1, 24, 2),
+ 
+-	MUX(0, "mout_aclk_g3d", mout_group5_p, SRC_TOP2, 16, 1),
++	MUX_F(0, "mout_aclk_g3d", mout_group5_p, SRC_TOP2, 16, 1,
++	      CLK_SET_RATE_PARENT, 0),
+ 
+ 	MUX(0, "mout_user_aclk400_isp", mout_user_aclk400_isp_p,
+ 			SRC_TOP3, 0, 1),
+@@ -653,8 +656,8 @@ static const struct samsung_mux_clock exynos5x_mux_clks[] __initconst = {
+ 			SRC_TOP5, 8, 1),
+ 	MUX(0, "mout_user_aclk266_g2d", mout_user_aclk266_g2d_p,
+ 			SRC_TOP5, 12, 1),
+-	MUX(CLK_MOUT_G3D, "mout_user_aclk_g3d", mout_user_aclk_g3d_p,
+-			SRC_TOP5, 16, 1),
++	MUX_F(CLK_MOUT_G3D, "mout_user_aclk_g3d", mout_user_aclk_g3d_p,
++			SRC_TOP5, 16, 1, CLK_SET_RATE_PARENT, 0),
+ 	MUX(0, "mout_user_aclk300_jpeg", mout_user_aclk300_jpeg_p,
+ 			SRC_TOP5, 20, 1),
+ 	MUX(CLK_MOUT_USER_ACLK300_DISP1, "mout_user_aclk300_disp1",
+@@ -663,7 +666,8 @@ static const struct samsung_mux_clock exynos5x_mux_clks[] __initconst = {
+ 			mout_user_aclk300_gscl_p, SRC_TOP5, 28, 1),
+ 
+ 	MUX(0, "mout_sclk_mpll", mout_mpll_p, SRC_TOP6, 0, 1),
+-	MUX(CLK_MOUT_VPLL, "mout_sclk_vpll", mout_vpll_p, SRC_TOP6, 4, 1),
++	MUX_F(CLK_MOUT_VPLL, "mout_sclk_vpll", mout_vpll_p, SRC_TOP6, 4, 1,
++	      CLK_SET_RATE_PARENT, 0),
+ 	MUX(CLK_MOUT_SCLK_SPLL, "mout_sclk_spll", mout_spll_p, SRC_TOP6, 8, 1),
+ 	MUX(0, "mout_sclk_ipll", mout_ipll_p, SRC_TOP6, 12, 1),
+ 	MUX(0, "mout_sclk_rpll", mout_rpll_p, SRC_TOP6, 16, 1),
+@@ -707,7 +711,8 @@ static const struct samsung_mux_clock exynos5x_mux_clks[] __initconst = {
+ 			SRC_TOP12, 8, 1),
+ 	MUX(0, "mout_sw_aclk266_g2d", mout_sw_aclk266_g2d_p,
+ 			SRC_TOP12, 12, 1),
+-	MUX(0, "mout_sw_aclk_g3d", mout_sw_aclk_g3d_p, SRC_TOP12, 16, 1),
++	MUX_F(0, "mout_sw_aclk_g3d", mout_sw_aclk_g3d_p, SRC_TOP12, 16, 1,
++	      CLK_IS_CRITICAL | CLK_SET_RATE_PARENT, 0),
+ 	MUX(0, "mout_sw_aclk300_jpeg", mout_sw_aclk300_jpeg_p,
+ 			SRC_TOP12, 20, 1),
+ 	MUX(CLK_MOUT_SW_ACLK300, "mout_sw_aclk300_disp1",
+@@ -804,8 +809,8 @@ static const struct samsung_div_clock exynos5x_div_clks[] __initconst = {
+ 			DIV_TOP2, 8, 3),
+ 	DIV(CLK_DOUT_ACLK266_G2D, "dout_aclk266_g2d", "mout_aclk266_g2d",
+ 			DIV_TOP2, 12, 3),
+-	DIV(CLK_DOUT_ACLK_G3D, "dout_aclk_g3d", "mout_aclk_g3d", DIV_TOP2,
+-			16, 3),
++	DIV_F(CLK_DOUT_ACLK_G3D, "dout_aclk_g3d", "mout_aclk_g3d", DIV_TOP2,
++			16, 3, CLK_SET_RATE_PARENT, 0),
+ 	DIV(CLK_DOUT_ACLK300_JPEG, "dout_aclk300_jpeg", "mout_aclk300_jpeg",
+ 			DIV_TOP2, 20, 3),
+ 	DIV(CLK_DOUT_ACLK300_DISP1, "dout_aclk300_disp1",
+@@ -1253,7 +1258,8 @@ static struct exynos5_subcmu_reg_dump exynos5x_gsc_suspend_regs[] = {
+ };
+ 
+ static const struct samsung_gate_clock exynos5x_g3d_gate_clks[] __initconst = {
+-	GATE(CLK_G3D, "g3d", "mout_user_aclk_g3d", GATE_IP_G3D, 9, 0, 0),
++	GATE(CLK_G3D, "g3d", "mout_user_aclk_g3d", GATE_IP_G3D, 9,
++	     CLK_SET_RATE_PARENT, 0),
+ };
+ 
+ static struct exynos5_subcmu_reg_dump exynos5x_g3d_suspend_regs[] = {
+@@ -1437,6 +1443,17 @@ static const struct samsung_pll_rate_table exynos5420_epll_24mhz_tbl[] = {
+ 	PLL_36XX_RATE(24 * MHZ,  32768001U, 131, 3, 5, 4719),
+ };
+ 
++static const struct samsung_pll_rate_table exynos5420_vpll_24mhz_tbl[] = {
++	PLL_35XX_RATE(24 * MHZ, 600000000U,  200, 2, 2),
++	PLL_35XX_RATE(24 * MHZ, 543000000U,  181, 2, 2),
++	PLL_35XX_RATE(24 * MHZ, 480000000U,  160, 2, 2),
++	PLL_35XX_RATE(24 * MHZ, 420000000U,  140, 2, 2),
++	PLL_35XX_RATE(24 * MHZ, 350000000U,  175, 3, 2),
++	PLL_35XX_RATE(24 * MHZ, 266000000U,  266, 3, 3),
++	PLL_35XX_RATE(24 * MHZ, 177000000U,  118, 2, 3),
++	PLL_35XX_RATE(24 * MHZ, 100000000U,  200, 3, 4),
++};
++
+ static struct samsung_pll_clock exynos5x_plls[nr_plls] __initdata = {
+ 	[apll] = PLL(pll_2550, CLK_FOUT_APLL, "fout_apll", "fin_pll", APLL_LOCK,
+ 		APLL_CON0, NULL),
+@@ -1561,6 +1578,7 @@ static void __init exynos5x_clk_init(struct device_node *np,
+ 		exynos5x_plls[apll].rate_table = exynos5420_pll2550x_24mhz_tbl;
+ 		exynos5x_plls[epll].rate_table = exynos5420_epll_24mhz_tbl;
+ 		exynos5x_plls[kpll].rate_table = exynos5420_pll2550x_24mhz_tbl;
++		exynos5x_plls[vpll].rate_table = exynos5420_vpll_24mhz_tbl;
+ 	}
+ 
+ 	if (soc == EXYNOS5420)
+diff --git a/drivers/devfreq/exynos-bus.c b/drivers/devfreq/exynos-bus.c
+index c832673273a2..37bd34d5625b 100644
+--- a/drivers/devfreq/exynos-bus.c
++++ b/drivers/devfreq/exynos-bus.c
+@@ -243,7 +243,7 @@ static int exynos_bus_parse_of(struct device_node *np,
+ {
+ 	struct device *dev = bus->dev;
+ 	struct dev_pm_opp *opp;
+-	unsigned long rate;
++	unsigned long rate, opp_rate;
+ 	int ret;
+ 
+ 	/* Get the clock to provide each bus with source clock */
+@@ -267,13 +267,21 @@ static int exynos_bus_parse_of(struct device_node *np,
+ 	}
+ 
+ 	rate = clk_get_rate(bus->clk);
+-
+-	opp = devfreq_recommended_opp(dev, &rate, 0);
++	opp_rate = rate;
++	opp = devfreq_recommended_opp(dev, &opp_rate, 0);
+ 	if (IS_ERR(opp)) {
+ 		dev_err(dev, "failed to find dev_pm_opp\n");
+ 		ret = PTR_ERR(opp);
+ 		goto err_opp;
+ 	}
++	/*
++	 * FIXME: U-boot leaves clock source at incorrect PLL, this results
++	 * in clock rate outside defined OPP rate. Work around this bug by
++	 * setting clock rate to recommended one.
++	 */
++	if (rate > opp_rate)
++		clk_set_rate(bus->clk, opp_rate);
++
+ 	bus->curr_freq = dev_pm_opp_get_freq(opp);
+ 	dev_pm_opp_put(opp);
+ 
+diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
+index f17d01f076c7..16cd1ca1a5ec 100644
+--- a/drivers/gpu/Makefile
++++ b/drivers/gpu/Makefile
+@@ -5,3 +5,4 @@
+ obj-$(CONFIG_TEGRA_HOST1X)	+= host1x/
+ obj-y			+= drm/ vga/
+ obj-$(CONFIG_IMX_IPUV3_CORE)	+= ipu-v3/
++obj-y                   += arm/
+diff --git a/drivers/gpu/drm/exynos/exynos_hdmi.c b/drivers/gpu/drm/exynos/exynos_hdmi.c
+index 09aa73c0f2ad..ec80d7075df1 100644
+--- a/drivers/gpu/drm/exynos/exynos_hdmi.c
++++ b/drivers/gpu/drm/exynos/exynos_hdmi.c
+@@ -143,6 +143,33 @@ struct hdmi_context {
+ 	bool				powered;
+ };
+ 
++static bool gdvi_mode = false;
++static bool gEnableHPD = true;
++
++static int __init dvi_force_enable(char *str)
++{
++	if (!strcmp(str, "dvi")) {
++		gdvi_mode = true;
++		pr_info("hdmi: using DVI mode\n");
++	} else {
++		gdvi_mode = false;
++		pr_info("hdmi: using HDMI mode\n");
++	}
++
++	return 0;
++}
++__setup("vout=", dvi_force_enable);
++
++static int __init hdmi_hpd_enable(char *str)
++{
++	if (!strcmp(str, "false")) {
++		gEnableHPD = false;
++	}
++
++	return 0;
++}
++__setup("HPD=", hdmi_hpd_enable);
++
+ static inline struct hdmi_context *encoder_to_hdmi(struct drm_encoder *e)
+ {
+ 	return container_of(e, struct hdmi_context, encoder);
+@@ -394,6 +421,38 @@ static const struct hdmiphy_config hdmiphy_5420_configs[] = {
+ 			0x54, 0xE3, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
+ 		},
+ 	},
++	{
++		.pixel_clock = 31490000,
++		.conf = {
++			0x01, 0xD1, 0x34, 0x74, 0x44, 0x3C, 0x3A, 0xC2,
++			0x81, 0xE8, 0x3B, 0xD9, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0xC3, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 32000000,
++		.conf = {
++			0x01, 0x51, 0x28, 0x55, 0x44, 0x40, 0x00, 0xC8,
++			0x02, 0xC8, 0xF0, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x80, 0x25, 0x01, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	/*
++	 * To support Vu5A, pixel clock 33.9MHz is needed
++	 * but we don't have the exact HDMI PHY table
++	 * so as a workaround, the closest table will be used.
++	 */
++	{
++		.pixel_clock = 33900000,
++		.conf = {
++			0x01, 0x51, 0x28, 0x55, 0x44, 0x40, 0x00, 0xC8,
++			0x02, 0xC8, 0xF0, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x80, 0x25, 0x01, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
+ 	{
+ 		.pixel_clock = 36000000,
+ 		.conf = {
+@@ -412,6 +471,29 @@ static const struct hdmiphy_config hdmiphy_5420_configs[] = {
+ 			0x54, 0x9A, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
+ 		},
+ 	},
++	/*
++	 * To support Vu7A+, pixel clock 49MHz is needed
++	 * but we don't have the exact HDMI PHY table
++	 * so as a workaround, the closest table will be used.
++	 */
++	{
++		.pixel_clock = 49000000,
++		.conf = {
++			0x01, 0x51, 0x2A, 0x32, 0x42, 0x30, 0x00, 0xC4,
++			0x83, 0xE8, 0xFC, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x7A, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 50400000,
++		.conf = {
++			0x01, 0x51, 0x2A, 0x32, 0x42, 0x30, 0x00, 0xC4,
++			0x83, 0xE8, 0xFC, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x7A, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
+ 	{
+ 		.pixel_clock = 65000000,
+ 		.conf = {
+@@ -440,7 +522,7 @@ static const struct hdmiphy_config hdmiphy_5420_configs[] = {
+ 		},
+ 	},
+ 	{
+-		.pixel_clock = 74176000,
++		.pixel_clock = 74170000,
+ 		.conf = {
+ 			0x01, 0xD1, 0x1F, 0x10, 0x40, 0x5B, 0xEF, 0xC8,
+ 			0x81, 0xE8, 0xB9, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
+@@ -457,6 +539,15 @@ static const struct hdmiphy_config hdmiphy_5420_configs[] = {
+ 			0x54, 0xA5, 0x24, 0x01, 0x00, 0x00, 0x01, 0x80,
+ 		},
+ 	},
++	{
++		.pixel_clock = 80140000,
++		.conf = {
++			0x01, 0xD1, 0x21, 0x11, 0x40, 0x3C, 0x2F, 0xC8,
++			0x87, 0xE8, 0xC8, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x99, 0x24, 0x01, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
+ 	{
+ 		.pixel_clock = 83500000,
+ 		.conf = {
+@@ -466,6 +557,24 @@ static const struct hdmiphy_config hdmiphy_5420_configs[] = {
+ 			0x54, 0x4A, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
+ 		},
+ 	},
++	{
++		.pixel_clock = 84750000,
++		.conf = {
++			0x01, 0xD1, 0x23, 0x11, 0x40, 0x30, 0x1E, 0xC7,
++			0x84, 0xE8, 0xD4, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x48, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 85860000,
++		.conf = {
++			0x01, 0xD1, 0x24, 0x11, 0x40, 0x30, 0xD2, 0xC8,
++			0x84, 0xE8, 0xD5, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x48, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
+ 	{
+ 		.pixel_clock = 88750000,
+ 		.conf = {
+@@ -475,6 +584,24 @@ static const struct hdmiphy_config hdmiphy_5420_configs[] = {
+ 			0x54, 0x45, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
+ 		},
+ 	},
++	{
++		.pixel_clock = 89750000,
++		.conf = {
++			0x01, 0xD1, 0x25, 0x11, 0x40, 0x30, 0x26, 0xC9,
++			0x83, 0xE8, 0xE0, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x89, 0x24, 0x01, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 104990000,
++		.conf = {
++			0x01, 0xD1, 0x2C, 0x12, 0x40, 0x78, 0xC3, 0xC2,
++			0x81, 0xE8, 0x06, 0xD9, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x3B, 0x24, 0x00, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
+ 	{
+ 		.pixel_clock = 106500000,
+ 		.conf = {
+@@ -484,6 +611,24 @@ static const struct hdmiphy_config hdmiphy_5420_configs[] = {
+ 			0x54, 0x73, 0x24, 0x01, 0x00, 0x00, 0x01, 0x80,
+ 		},
+ 	},
++	{
++		.pixel_clock = 106560000,
++		.conf = {
++			0x01, 0xD1, 0x2C, 0x12, 0x40, 0x78, 0x73, 0xCA,
++			0x85, 0xE8, 0x0B, 0xD9, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x73, 0x24, 0x01, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 107800000,
++		.conf = {
++			0x01, 0x51, 0x2D, 0x15, 0x40, 0x01, 0x00, 0xC8,
++			0x82, 0xC8, 0x0E, 0xD9, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x66,
++			0x54, 0xC7, 0x25, 0x03, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
+ 	{
+ 		.pixel_clock = 108000000,
+ 		.conf = {
+@@ -502,6 +647,33 @@ static const struct hdmiphy_config hdmiphy_5420_configs[] = {
+ 			0x54, 0x6A, 0x24, 0x01, 0x00, 0x00, 0x01, 0x80,
+ 		},
+ 	},
++	{
++		.pixel_clock = 119000000,
++		.conf = {
++			0x01, 0xD1, 0x31, 0x14, 0x40, 0x78, 0x41, 0xCB,
++			0x89, 0xE8, 0x28, 0xD9, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x68, 0x24, 0x01, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 122000000,
++		.conf = {
++			0x01, 0xD1, 0x33, 0x14, 0x40, 0x30, 0xF0, 0xC8,
++			0x85, 0xE8, 0x31, 0xD9, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x65, 0x24, 0x01, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 125590000,
++		.conf = {
++			0x01, 0xD1, 0x34, 0x14, 0x40, 0x78, 0x4F, 0xC2,
++			0x81, 0xE8, 0x3A, 0xD9, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x87, 0x25, 0x03, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
+ 	{
+ 		.pixel_clock = 146250000,
+ 		.conf = {
+@@ -520,6 +692,51 @@ static const struct hdmiphy_config hdmiphy_5420_configs[] = {
+ 			0x54, 0x4B, 0x25, 0x03, 0x00, 0x80, 0x01, 0x80,
+ 		},
+ 	},
++	{
++		.pixel_clock = 154000000,
++		.conf = {
++			0x01, 0xD1, 0x20, 0x01, 0x40, 0x30, 0x08, 0xCC,
++			0x8C, 0xE8, 0xC1, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x3F, 0x25, 0x03, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 162000000,
++		.conf = {
++			0x01, 0xD1, 0x22, 0x01, 0x40, 0x30, 0xD4, 0xCD,
++			0x89, 0xE8, 0xC9, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x31, 0x25, 0x03, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 164100000,
++		.conf = {
++			0x01, 0xD1, 0x22, 0x89, 0x49, 0xB0, 0x15, 0xCE,
++			0x8A, 0xF8, 0xCD, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x2B, 0x25, 0x03, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 196900000,
++		.conf = {
++			0x01, 0xD1, 0x29, 0x1618, 0x418, 0x190, 0xF5, 0xCF,
++			0x8D, 0x168, 0xF5, 0xD8, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0xFA, 0x24, 0x03, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
++	{
++		.pixel_clock = 204800000,
++		.conf = {
++			0x01, 0xD1, 0x2B, 0x02, 0x40, 0x30, 0xE0, 0xC8,
++			0x85, 0xE8, 0x00, 0xD9, 0x45, 0xA0, 0xAC, 0x80,
++			0x08, 0x80, 0x09, 0x84, 0x05, 0x02, 0x24, 0x86,
++			0x54, 0x3C, 0x24, 0x01, 0x00, 0x00, 0x01, 0x80,
++		},
++	},
+ };
+ 
+ static const struct hdmiphy_config hdmiphy_5433_configs[] = {
+@@ -843,6 +1060,9 @@ static enum drm_connector_status hdmi_detect(struct drm_connector *connector,
+ {
+ 	struct hdmi_context *hdata = connector_to_hdmi(connector);
+ 
++	if (!gEnableHPD)
++		return connector_status_connected;
++
+ 	if (gpiod_get_value(hdata->hpd_gpio))
+ 		return connector_status_connected;
+ 
+@@ -882,7 +1102,10 @@ static int hdmi_get_modes(struct drm_connector *connector)
+ 	if (!edid)
+ 		return -ENODEV;
+ 
+-	hdata->dvi_mode = !drm_detect_hdmi_monitor(edid);
++	if (gdvi_mode)
++		hdata->dvi_mode = true;
++	else
++		hdata->dvi_mode = !drm_detect_hdmi_monitor(edid);
+ 	DRM_DEV_DEBUG_KMS(hdata->dev, "%s : width[%d] x height[%d]\n",
+ 			  (hdata->dvi_mode ? "dvi monitor" : "hdmi monitor"),
+ 			  edid->width_cm, edid->height_cm);
+@@ -971,6 +1194,15 @@ static int hdmi_create_connector(struct drm_encoder *encoder)
+ 		DRM_DEV_ERROR(hdata->dev, "Failed to allocate CEC notifier\n");
+ 	}
+ 
++	cec_fill_conn_info_from_drm(&conn_info, connector);
++
++	hdata->notifier = cec_notifier_conn_register(hdata->dev, NULL,
++						     &conn_info);
++	if (hdata->notifier == NULL) {
++		ret = -ENOMEM;
++		DRM_DEV_ERROR(hdata->dev, "Failed to allocate CEC notifier\n");
++	}
++
+ 	return ret;
+ }
+ 
+@@ -1580,6 +1812,9 @@ static int hdmi_audio_hw_params(struct device *dev, void *data,
+ {
+ 	struct hdmi_context *hdata = dev_get_drvdata(dev);
+ 
++	if (hdata->dvi_mode)
++		return 0;
++
+ 	if (daifmt->fmt != HDMI_I2S || daifmt->bit_clk_inv ||
+ 	    daifmt->frame_clk_inv || daifmt->bit_clk_master ||
+ 	    daifmt->frame_clk_master) {
+@@ -1966,6 +2201,7 @@ static int hdmi_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, hdata);
+ 
+ 	hdata->dev = dev;
++	hdata->dvi_mode = gdvi_mode;
+ 
+ 	mutex_init(&hdata->mutex);
+ 
+diff --git a/drivers/gpu/drm/exynos/exynos_mixer.c b/drivers/gpu/drm/exynos/exynos_mixer.c
+index 7b24338fad3c..609235e145bd 100644
+--- a/drivers/gpu/drm/exynos/exynos_mixer.c
++++ b/drivers/gpu/drm/exynos/exynos_mixer.c
+@@ -314,23 +314,26 @@ static void mixer_cfg_gfx_blend(struct mixer_context *ctx, unsigned int win,
+ 	u32 val;
+ 
+ 	val  = MXR_GRP_CFG_COLOR_KEY_DISABLE; /* no blank key */
+-	switch (pixel_alpha) {
+-	case DRM_MODE_BLEND_PIXEL_NONE:
+-		break;
+-	case DRM_MODE_BLEND_COVERAGE:
+-		val |= MXR_GRP_CFG_PIXEL_BLEND_EN;
+-		break;
+-	case DRM_MODE_BLEND_PREMULTI:
+-	default:
+-		val |= MXR_GRP_CFG_BLEND_PRE_MUL;
+-		val |= MXR_GRP_CFG_PIXEL_BLEND_EN;
+-		break;
+-	}
++	if (win) {
++		switch (pixel_alpha) {
++		case DRM_MODE_BLEND_PIXEL_NONE:
++			break;
++		case DRM_MODE_BLEND_COVERAGE:
++			val |= MXR_GRP_CFG_PIXEL_BLEND_EN;
++			break;
++		case DRM_MODE_BLEND_PREMULTI:
++		default:
++			val |= MXR_GRP_CFG_BLEND_PRE_MUL;
++			val |= MXR_GRP_CFG_PIXEL_BLEND_EN;
++			break;
++		}
+ 
+-	if (alpha != DRM_BLEND_ALPHA_OPAQUE) {
+-		val |= MXR_GRP_CFG_WIN_BLEND_EN;
+-		val |= win_alpha;
++		if (alpha != DRM_BLEND_ALPHA_OPAQUE) {
++			val |= MXR_GRP_CFG_WIN_BLEND_EN;
++			val |= win_alpha;
++		}
+ 	}
++
+ 	mixer_reg_writemask(ctx, MXR_GRAPHIC_CFG(win),
+ 			    val, MXR_GRP_CFG_MISC_MASK);
+ }
+diff --git a/drivers/media/common/videobuf2/videobuf2-dma-contig.c b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+index 44cd0e530bbd..aafa499a53a8 100644
+--- a/drivers/media/common/videobuf2/videobuf2-dma-contig.c
++++ b/drivers/media/common/videobuf2/videobuf2-dma-contig.c
+@@ -62,6 +62,28 @@ static unsigned long vb2_dc_get_contiguous_size(struct sg_table *sgt)
+ 	return size;
+ }
+ 
++static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
++{
++	int ret;
++	struct sg_table *sgt;
++
++	sgt = kmalloc(sizeof(*sgt), GFP_KERNEL);
++	if (!sgt) {
++		dev_err(buf->dev, "failed to alloc sg table\n");
++		return NULL;
++	}
++
++	ret = dma_get_sgtable_attrs(buf->dev, sgt, buf->cookie, buf->dma_addr,
++		buf->size, buf->attrs);
++	if (ret < 0) {
++		dev_err(buf->dev, "failed to get scatterlist from DMA API\n");
++		kfree(sgt);
++		return NULL;
++	}
++
++	return sgt;
++}
++
+ /*********************************************/
+ /*         callbacks for all buffers         */
+ /*********************************************/
+@@ -130,6 +152,10 @@ static void vb2_dc_put(void *buf_priv)
+ 		sg_free_table(buf->sgt_base);
+ 		kfree(buf->sgt_base);
+ 	}
++	if (buf->dma_sgt) {
++		sg_free_table(buf->dma_sgt);
++		kfree(buf->dma_sgt);
++	}
+ 	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
+ 		       buf->attrs);
+ 	put_device(buf->dev);
+@@ -171,6 +197,14 @@ static void *vb2_dc_alloc(struct device *dev, unsigned long attrs,
+ 	buf->handler.put = vb2_dc_put;
+ 	buf->handler.arg = buf;
+ 
++	/*
++	 * Enable cache maintenance. Even if userspace doesn't mmap the buffer,
++	 * sync still should be happening if kernel mapping is present.
++	 */
++	if (!(buf->attrs & DMA_ATTR_NO_KERNEL_MAPPING) &&
++	    buf->attrs & DMA_ATTR_NON_CONSISTENT)
++		buf->dma_sgt = vb2_dc_get_base_sgt(buf);
++
+ 	refcount_set(&buf->refcount, 1);
+ 
+ 	return buf;
+@@ -200,6 +234,10 @@ static int vb2_dc_mmap(void *buf_priv, struct vm_area_struct *vma)
+ 
+ 	vma->vm_ops->open(vma);
+ 
++	/* Enable cache maintenance if not enabled in allocation. */
++	if (!buf->dma_sgt && buf->attrs & DMA_ATTR_NON_CONSISTENT)
++		buf->dma_sgt = vb2_dc_get_base_sgt(buf);
++
+ 	pr_debug("%s: mapped dma addr 0x%08lx at 0x%08lx, size %ld\n",
+ 		__func__, (unsigned long)buf->dma_addr, vma->vm_start,
+ 		buf->size);
+@@ -366,28 +404,6 @@ static const struct dma_buf_ops vb2_dc_dmabuf_ops = {
+ 	.release = vb2_dc_dmabuf_ops_release,
+ };
+ 
+-static struct sg_table *vb2_dc_get_base_sgt(struct vb2_dc_buf *buf)
+-{
+-	int ret;
+-	struct sg_table *sgt;
+-
+-	sgt = kmalloc(sizeof(*sgt), GFP_KERNEL);
+-	if (!sgt) {
+-		dev_err(buf->dev, "failed to alloc sg table\n");
+-		return NULL;
+-	}
+-
+-	ret = dma_get_sgtable_attrs(buf->dev, sgt, buf->cookie, buf->dma_addr,
+-		buf->size, buf->attrs);
+-	if (ret < 0) {
+-		dev_err(buf->dev, "failed to get scatterlist from DMA API\n");
+-		kfree(sgt);
+-		return NULL;
+-	}
+-
+-	return sgt;
+-}
+-
+ static struct dma_buf *vb2_dc_get_dmabuf(void *buf_priv, unsigned long flags)
+ {
+ 	struct vb2_dc_buf *buf = buf_priv;
+diff --git a/drivers/media/platform/exynos-gsc/gsc-core.h b/drivers/media/platform/exynos-gsc/gsc-core.h
+index 8e5a9acb78aa..235d687614f0 100644
+--- a/drivers/media/platform/exynos-gsc/gsc-core.h
++++ b/drivers/media/platform/exynos-gsc/gsc-core.h
+@@ -474,9 +474,9 @@ static inline struct gsc_frame *ctx_get_frame(struct gsc_ctx *ctx,
+ {
+ 	struct gsc_frame *frame;
+ 
+-	if (V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE == type) {
++	if (V4L2_BUF_TYPE_VIDEO_OUTPUT == type || V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE == type) {
+ 		frame = &ctx->s_frame;
+-	} else if (V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE == type) {
++	} else if (V4L2_BUF_TYPE_VIDEO_CAPTURE == type || V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE == type) {
+ 		frame = &ctx->d_frame;
+ 	} else {
+ 		pr_err("Wrong buffer/video queue type (%d)", type);
+diff --git a/drivers/media/platform/s5p-jpeg/jpeg-core.c b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+index 8dbbd5f2a40a..b5e0105ae05f 100644
+--- a/drivers/media/platform/s5p-jpeg/jpeg-core.c
++++ b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+@@ -1798,6 +1798,31 @@ static int exynos3250_jpeg_try_crop(struct s5p_jpeg_ctx *ctx,
+  * V4L2 controls
+  */
+ 
++static int vidioc_decoder_cmd(struct file *file, void *priv,
++			struct v4l2_decoder_cmd *cmd)
++{
++	struct s5p_jpeg_ctx *ctx = fh_to_ctx(priv);
++	struct vb2_queue *vq_src = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT);
++	struct vb2_v4l2_buffer *buf;
++
++	switch (cmd->cmd) {
++	case V4L2_DEC_CMD_STOP:
++		if (cmd->flags != 0)
++			return -EINVAL;
++		if (!vb2_is_streaming(vq_src))
++			return -EINVAL;
++
++		buf = v4l2_m2m_last_src_buf(ctx->fh.m2m_ctx);
++		buf->flags |= V4L2_BUF_FLAG_LAST;
++
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int s5p_jpeg_g_selection(struct file *file, void *priv,
+ 			 struct v4l2_selection *s)
+ {
+@@ -1832,9 +1857,6 @@ static int s5p_jpeg_g_selection(struct file *file, void *priv,
+ 	return 0;
+ }
+ 
+-/*
+- * V4L2 controls
+- */
+ static int s5p_jpeg_s_selection(struct file *file, void *fh,
+ 				  struct v4l2_selection *s)
+ {
+@@ -2026,6 +2048,8 @@ static const struct v4l2_ioctl_ops s5p_jpeg_ioctl_ops = {
+ 	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
+ 	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
+ 
++	.vidioc_decoder_cmd             = vidioc_decoder_cmd,
++
+ 	.vidioc_g_selection		= s5p_jpeg_g_selection,
+ 	.vidioc_s_selection		= s5p_jpeg_s_selection,
+ 
+@@ -2472,13 +2496,6 @@ static int s5p_jpeg_queue_setup(struct vb2_queue *vq,
+ 
+ 	size = q_data->size;
+ 
+-	/*
+-	 * header is parsed during decoding and parsed information stored
+-	 * in the context so we do not allow another buffer to overwrite it
+-	 */
+-	if (ctx->mode == S5P_JPEG_DECODE)
+-		count = 1;
+-
+ 	*nbuffers = count;
+ 	*nplanes = 1;
+ 	sizes[0] = size;
+@@ -2589,6 +2606,7 @@ static int s5p_jpeg_start_streaming(struct vb2_queue *q, unsigned int count)
+ static void s5p_jpeg_stop_streaming(struct vb2_queue *q)
+ {
+ 	struct s5p_jpeg_ctx *ctx = vb2_get_drv_priv(q);
++	struct vb2_v4l2_buffer *buf;
+ 
+ 	/*
+ 	 * STREAMOFF is an acknowledgment for resolution change event.
+@@ -2601,6 +2619,11 @@ static void s5p_jpeg_stop_streaming(struct vb2_queue *q)
+ 		ctx->state = JPEGCTX_RUNNING;
+ 	}
+ 
++	while ((buf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx)))
++		v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
++	while ((buf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx)))
++		v4l2_m2m_buf_done(buf, VB2_BUF_STATE_ERROR);
++
+ 	pm_runtime_put(ctx->jpeg->dev);
+ }
+ 
+@@ -2840,6 +2863,8 @@ static irqreturn_t exynos3250_jpeg_irq(int irq, void *dev_id)
+ 	v4l2_m2m_buf_done(src_buf, state);
+ 	if (curr_ctx->mode == S5P_JPEG_ENCODE)
+ 		vb2_set_plane_payload(&dst_buf->vb2_buf, 0, payload_size);
++	if (src_buf->flags & V4L2_BUF_FLAG_LAST)
++		dst_buf->flags |= V4L2_BUF_FLAG_LAST;
+ 	v4l2_m2m_buf_done(dst_buf, state);
+ 
+ 	curr_ctx->subsampling =
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc.c b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+index b776f83e395e..fe401d6764cc 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+@@ -858,7 +858,7 @@ static int s5p_mfc_open(struct file *file)
+ 	 * We'll do mostly sequential access, so sacrifice TLB efficiency for
+ 	 * faster allocation.
+ 	 */
+-	q->dma_attrs = DMA_ATTR_ALLOC_SINGLE_PAGES;
++	q->dma_attrs = DMA_ATTR_ALLOC_SINGLE_PAGES | DMA_ATTR_NON_CONSISTENT | DMA_ATTR_NO_KERNEL_MAPPING;
+ 	q->mem_ops = &vb2_dma_contig_memops;
+ 	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+ 	ret = vb2_queue_init(q);
+@@ -893,7 +893,7 @@ static int s5p_mfc_open(struct file *file)
+ 	 * We'll do mostly sequential access, so sacrifice TLB efficiency for
+ 	 * faster allocation.
+ 	 */
+-	q->dma_attrs = DMA_ATTR_ALLOC_SINGLE_PAGES;
++	q->dma_attrs = DMA_ATTR_ALLOC_SINGLE_PAGES | DMA_ATTR_NON_CONSISTENT | DMA_ATTR_NO_KERNEL_MAPPING;
+ 	q->mem_ops = &vb2_dma_contig_memops;
+ 	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+ 	ret = vb2_queue_init(q);
+@@ -941,6 +941,11 @@ static int s5p_mfc_release(struct file *file)
+ 	mfc_debug_enter();
+ 	if (dev)
+ 		mutex_lock(&dev->mfc_mutex);
++
++	/* stop streaming */
++	vb2_streamoff(&ctx->vq_src, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
++	vb2_streamoff(&ctx->vq_dst, V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE);
++
+ 	vb2_queue_release(&ctx->vq_src);
+ 	vb2_queue_release(&ctx->vq_dst);
+ 	if (dev) {
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc_enc.c b/drivers/media/platform/s5p-mfc/s5p_mfc_enc.c
+index 912fe0c5ab18..d48e7b57d96a 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc_enc.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc_enc.c
+@@ -1208,6 +1208,7 @@ static int enc_post_frame_start(struct s5p_mfc_ctx *ctx)
+ {
+ 	struct s5p_mfc_dev *dev = ctx->dev;
+ 	struct s5p_mfc_buf *mb_entry;
++	struct s5p_mfc_buf *dst_buf;
+ 	unsigned long enc_y_addr = 0, enc_c_addr = 0;
+ 	unsigned long mb_y_addr, mb_c_addr;
+ 	int slice_type;
+@@ -1227,8 +1228,12 @@ static int enc_post_frame_start(struct s5p_mfc_ctx *ctx)
+ 					&mb_entry->b->vb2_buf, 0);
+ 			mb_c_addr = vb2_dma_contig_plane_dma_addr(
+ 					&mb_entry->b->vb2_buf, 1);
++			dst_buf = list_entry(ctx->dst_queue.next,
++					struct s5p_mfc_buf, list);
+ 			if ((enc_y_addr == mb_y_addr) &&
+ 						(enc_c_addr == mb_c_addr)) {
++				dst_buf->b->timecode = mb_entry->b->timecode;
++				dst_buf->b->vb2_buf.timestamp = mb_entry->b->vb2_buf.timestamp;
+ 				list_del(&mb_entry->list);
+ 				ctx->src_queue_cnt--;
+ 				vb2_buffer_done(&mb_entry->b->vb2_buf,
+@@ -1241,8 +1246,12 @@ static int enc_post_frame_start(struct s5p_mfc_ctx *ctx)
+ 					&mb_entry->b->vb2_buf, 0);
+ 			mb_c_addr = vb2_dma_contig_plane_dma_addr(
+ 					&mb_entry->b->vb2_buf, 1);
++			dst_buf = list_entry(ctx->dst_queue.next,
++					struct s5p_mfc_buf, list);
+ 			if ((enc_y_addr == mb_y_addr) &&
+ 						(enc_c_addr == mb_c_addr)) {
++				dst_buf->b->timecode = mb_entry->b->timecode;
++				dst_buf->b->vb2_buf.timestamp = mb_entry->b->vb2_buf.timestamp;
+ 				list_del(&mb_entry->list);
+ 				ctx->ref_queue_cnt--;
+ 				vb2_buffer_done(&mb_entry->b->vb2_buf,
+diff --git a/drivers/memory/jedec_ddr.h b/drivers/memory/jedec_ddr.h
+index 4a21b5044ff8..e59ccbd982d0 100644
+--- a/drivers/memory/jedec_ddr.h
++++ b/drivers/memory/jedec_ddr.h
+@@ -29,6 +29,7 @@
+ #define DDR_TYPE_LPDDR2_S4	3
+ #define DDR_TYPE_LPDDR2_S2	4
+ #define DDR_TYPE_LPDDR2_NVM	5
++#define DDR_TYPE_LPDDR3		6
+ 
+ /* DDR IO width */
+ #define DDR_IO_WIDTH_4		1
+@@ -169,4 +170,64 @@ extern const struct lpddr2_timings
+ 	lpddr2_jedec_timings[NUM_DDR_TIMING_TABLE_ENTRIES];
+ extern const struct lpddr2_min_tck lpddr2_jedec_min_tck;
+ 
++/*
++ * Structure for timings for LPDDR3 based on LPDDR2 plus additional fields.
++ * All parameters are in pico seconds(ps) excluding max_freq, min_freq which
++ * are in Hz.
++ */
++struct lpddr3_timings {
++	u32 max_freq;
++	u32 min_freq;
++	u32 tRFC;
++	u32 tRRD;
++	u32 tRPab;
++	u32 tRPpb;
++	u32 tRCD;
++	u32 tRC;
++	u32 tRAS;
++	u32 tWTR;
++	u32 tWR;
++	u32 tRTP;
++	u32 tW2W_C2C;
++	u32 tR2R_C2C;
++	u32 tWL;
++	u32 tDQSCK;
++	u32 tRL;
++	u32 tFAW;
++	u32 tXSR;
++	u32 tXP;
++	u32 tCKE;
++	u32 tCKESR;
++	u32 tMRD;
++};
++
++/*
++ * Min value for some parameters in terms of number of tCK cycles(nCK)
++ * Please set to zero parameters that are not valid for a given memory
++ * type
++ */
++struct lpddr3_min_tck {
++	u32 tRFC;
++	u32 tRRD;
++	u32 tRPab;
++	u32 tRPpb;
++	u32 tRCD;
++	u32 tRC;
++	u32 tRAS;
++	u32 tWTR;
++	u32 tWR;
++	u32 tRTP;
++	u32 tW2W_C2C;
++	u32 tR2R_C2C;
++	u32 tWL;
++	u32 tDQSCK;
++	u32 tRL;
++	u32 tFAW;
++	u32 tXSR;
++	u32 tXP;
++	u32 tCKE;
++	u32 tCKESR;
++	u32 tMRD;
++};
++
+ #endif /* __JEDEC_DDR_H */
+diff --git a/drivers/memory/of_memory.c b/drivers/memory/of_memory.c
+index 46539b27a3fb..71f26eac7350 100644
+--- a/drivers/memory/of_memory.c
++++ b/drivers/memory/of_memory.c
+@@ -3,6 +3,7 @@
+  * OpenFirmware helpers for memory drivers
+  *
+  * Copyright (C) 2012 Texas Instruments, Inc.
++ * Copyright (C) 2019 Samsung Electronics Co., Ltd.
+  */
+ 
+ #include <linux/device.h>
+@@ -149,3 +150,151 @@ const struct lpddr2_timings *of_get_ddr_timings(struct device_node *np_ddr,
+ 	return lpddr2_jedec_timings;
+ }
+ EXPORT_SYMBOL(of_get_ddr_timings);
++
++/**
++ * of_lpddr3_get_min_tck() - extract min timing values for lpddr3
++ * @np: pointer to ddr device tree node
++ * @device: device requesting for min timing values
++ *
++ * Populates the lpddr3_min_tck structure by extracting data
++ * from device tree node. Returns a pointer to the populated
++ * structure. If any error in populating the structure, returns NULL.
++ */
++const struct lpddr3_min_tck *of_lpddr3_get_min_tck(struct device_node *np,
++						   struct device *dev)
++{
++	int			ret = 0;
++	struct lpddr3_min_tck	*min;
++
++	min = devm_kzalloc(dev, sizeof(*min), GFP_KERNEL);
++	if (!min)
++		goto default_min_tck;
++
++	ret |= of_property_read_u32(np, "tRFC-min-tck", &min->tRFC);
++	ret |= of_property_read_u32(np, "tRRD-min-tck", &min->tRRD);
++	ret |= of_property_read_u32(np, "tRPab-min-tck", &min->tRPab);
++	ret |= of_property_read_u32(np, "tRPpb-min-tck", &min->tRPpb);
++	ret |= of_property_read_u32(np, "tRCD-min-tck", &min->tRCD);
++	ret |= of_property_read_u32(np, "tRC-min-tck", &min->tRC);
++	ret |= of_property_read_u32(np, "tRAS-min-tck", &min->tRAS);
++	ret |= of_property_read_u32(np, "tWTR-min-tck", &min->tWTR);
++	ret |= of_property_read_u32(np, "tWR-min-tck", &min->tWR);
++	ret |= of_property_read_u32(np, "tRTP-min-tck", &min->tRTP);
++	ret |= of_property_read_u32(np, "tW2W-C2C-min-tck", &min->tW2W_C2C);
++	ret |= of_property_read_u32(np, "tR2R-C2C-min-tck", &min->tR2R_C2C);
++	ret |= of_property_read_u32(np, "tWL-min-tck", &min->tWL);
++	ret |= of_property_read_u32(np, "tDQSCK-min-tck", &min->tDQSCK);
++	ret |= of_property_read_u32(np, "tRL-min-tck", &min->tRL);
++	ret |= of_property_read_u32(np, "tFAW-min-tck", &min->tFAW);
++	ret |= of_property_read_u32(np, "tXSR-min-tck", &min->tXSR);
++	ret |= of_property_read_u32(np, "tXP-min-tck", &min->tXP);
++	ret |= of_property_read_u32(np, "tCKE-min-tck", &min->tCKE);
++	ret |= of_property_read_u32(np, "tCKESR-min-tck", &min->tCKESR);
++	ret |= of_property_read_u32(np, "tMRD-min-tck", &min->tMRD);
++
++	if (ret) {
++		dev_warn(dev, "%s: errors while parsing min-tck values\n",
++			 __func__);
++		devm_kfree(dev, min);
++		goto default_min_tck;
++	}
++
++	return min;
++
++default_min_tck:
++	dev_warn(dev, "%s: using default min-tck values\n", __func__);
++	return NULL;
++}
++EXPORT_SYMBOL(of_lpddr3_get_min_tck);
++
++static int of_lpddr3_do_get_timings(struct device_node *np,
++				    struct lpddr3_timings *tim)
++{
++	int ret;
++
++	/* The 'reg' param required since DT has changed, used as 'max-freq' */
++	ret = of_property_read_u32(np, "reg", &tim->max_freq);
++	ret |= of_property_read_u32(np, "min-freq", &tim->min_freq);
++	ret |= of_property_read_u32(np, "tRFC", &tim->tRFC);
++	ret |= of_property_read_u32(np, "tRRD", &tim->tRRD);
++	ret |= of_property_read_u32(np, "tRPab", &tim->tRPab);
++	ret |= of_property_read_u32(np, "tRPpb", &tim->tRPpb);
++	ret |= of_property_read_u32(np, "tRCD", &tim->tRCD);
++	ret |= of_property_read_u32(np, "tRC", &tim->tRC);
++	ret |= of_property_read_u32(np, "tRAS", &tim->tRAS);
++	ret |= of_property_read_u32(np, "tWTR", &tim->tWTR);
++	ret |= of_property_read_u32(np, "tWR", &tim->tWR);
++	ret |= of_property_read_u32(np, "tRTP", &tim->tRTP);
++	ret |= of_property_read_u32(np, "tW2W-C2C", &tim->tW2W_C2C);
++	ret |= of_property_read_u32(np, "tR2R-C2C", &tim->tR2R_C2C);
++	ret |= of_property_read_u32(np, "tFAW", &tim->tFAW);
++	ret |= of_property_read_u32(np, "tXSR", &tim->tXSR);
++	ret |= of_property_read_u32(np, "tXP", &tim->tXP);
++	ret |= of_property_read_u32(np, "tCKE", &tim->tCKE);
++	ret |= of_property_read_u32(np, "tCKESR", &tim->tCKESR);
++	ret |= of_property_read_u32(np, "tMRD", &tim->tMRD);
++
++	return ret;
++}
++
++/**
++ * of_lpddr3_get_ddr_timings() - extracts the lpddr3 timings and updates no of
++ * frequencies available.
++ * @np_ddr: Pointer to ddr device tree node
++ * @dev: Device requesting for ddr timings
++ * @device_type: Type of ddr
++ * @nr_frequencies: No of frequencies available for ddr
++ * (updated by this function)
++ *
++ * Populates lpddr3_timings structure by extracting data from device
++ * tree node. Returns pointer to populated structure. If any error
++ * while populating, returns NULL.
++ */
++const struct lpddr3_timings
++*of_lpddr3_get_ddr_timings(struct device_node *np_ddr, struct device *dev,
++			   u32 device_type, u32 *nr_frequencies)
++{
++	struct lpddr3_timings	*timings = NULL;
++	u32			arr_sz = 0, i = 0;
++	struct device_node	*np_tim;
++	char			*tim_compat = NULL;
++
++	switch (device_type) {
++	case DDR_TYPE_LPDDR3:
++		tim_compat = "jedec,lpddr3-timings";
++		break;
++	default:
++		dev_warn(dev, "%s: un-supported memory type\n", __func__);
++	}
++
++	for_each_child_of_node(np_ddr, np_tim)
++		if (of_device_is_compatible(np_tim, tim_compat))
++			arr_sz++;
++
++	if (arr_sz)
++		timings = devm_kcalloc(dev, arr_sz, sizeof(*timings),
++				       GFP_KERNEL);
++
++	if (!timings)
++		goto default_timings;
++
++	for_each_child_of_node(np_ddr, np_tim) {
++		if (of_device_is_compatible(np_tim, tim_compat)) {
++			if (of_lpddr3_do_get_timings(np_tim, &timings[i])) {
++				devm_kfree(dev, timings);
++				goto default_timings;
++			}
++			i++;
++		}
++	}
++
++	*nr_frequencies = arr_sz;
++
++	return timings;
++
++default_timings:
++	dev_warn(dev, "%s: failed to get timings\n", __func__);
++	*nr_frequencies = 0;
++	return NULL;
++}
++EXPORT_SYMBOL(of_lpddr3_get_ddr_timings);
+diff --git a/drivers/memory/of_memory.h b/drivers/memory/of_memory.h
+index b077cc836b0b..e39ecc4c733d 100644
+--- a/drivers/memory/of_memory.h
++++ b/drivers/memory/of_memory.h
+@@ -14,6 +14,11 @@ extern const struct lpddr2_min_tck *of_get_min_tck(struct device_node *np,
+ extern const struct lpddr2_timings
+ 	*of_get_ddr_timings(struct device_node *np_ddr, struct device *dev,
+ 	u32 device_type, u32 *nr_frequencies);
++extern const struct lpddr3_min_tck
++	*of_lpddr3_get_min_tck(struct device_node *np, struct device *dev);
++extern const struct lpddr3_timings
++	*of_lpddr3_get_ddr_timings(struct device_node *np_ddr,
++	struct device *dev, u32 device_type, u32 *nr_frequencies);
+ #else
+ static inline const struct lpddr2_min_tck
+ 	*of_get_min_tck(struct device_node *np, struct device *dev)
+@@ -27,6 +32,19 @@ static inline const struct lpddr2_timings
+ {
+ 	return NULL;
+ }
++
++static inline const struct lpddr3_min_tck
++	*of_lpddr3_get_min_tck(struct device_node *np, struct device *dev)
++{
++	return NULL;
++}
++
++static inline const struct lpddr3_timings
++	*of_lpddr3_get_ddr_timings(struct device_node *np_ddr,
++	struct device *dev, u32 device_type, u32 *nr_frequencies)
++{
++	return NULL;
++}
+ #endif /* CONFIG_OF && CONFIG_DDR */
+ 
+ #endif /* __LINUX_MEMORY_OF_REG_ */
+diff --git a/drivers/memory/samsung/Kconfig b/drivers/memory/samsung/Kconfig
+index 79ce7ea58903..e9c3ce92350c 100644
+--- a/drivers/memory/samsung/Kconfig
++++ b/drivers/memory/samsung/Kconfig
+@@ -7,6 +7,19 @@ config SAMSUNG_MC
+ 
+ if SAMSUNG_MC
+ 
++config EXYNOS5422_DMC
++	tristate "EXYNOS5422 Dynamic Memory Controller driver"
++	depends on ARCH_EXYNOS || (COMPILE_TEST && HAS_IOMEM)
++	select DDR
++	depends on DEVFREQ_GOV_SIMPLE_ONDEMAND
++	depends on (PM_DEVFREQ && PM_DEVFREQ_EVENT)
++	help
++	  This adds driver for Exynos5422 DMC (Dynamic Memory Controller).
++	  The driver provides support for Dynamic Voltage and Frequency Scaling in
++	  DMC and DRAM. It also supports changing timings of DRAM running with
++	  different frequency. The timings are calculated based on DT memory
++	  information.
++
+ config EXYNOS_SROM
+ 	bool "Exynos SROM controller driver" if COMPILE_TEST
+ 	depends on (ARM && ARCH_EXYNOS) || (COMPILE_TEST && HAS_IOMEM)
+diff --git a/drivers/memory/samsung/Makefile b/drivers/memory/samsung/Makefile
+index 00587be66211..ea071be21c44 100644
+--- a/drivers/memory/samsung/Makefile
++++ b/drivers/memory/samsung/Makefile
+@@ -1,2 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_EXYNOS5422_DMC)	+= exynos5422-dmc.o
+ obj-$(CONFIG_EXYNOS_SROM)	+= exynos-srom.o
+diff --git a/drivers/mmc/host/dw_mmc-exynos.h b/drivers/mmc/host/dw_mmc-exynos.h
+index 0280d394a32a..7088e39de5d2 100644
+--- a/drivers/mmc/host/dw_mmc-exynos.h
++++ b/drivers/mmc/host/dw_mmc-exynos.h
+@@ -61,7 +61,7 @@
+ /* Fixed clock divider */
+ #define EXYNOS4210_FIXED_CIU_CLK_DIV	2
+ #define EXYNOS4412_FIXED_CIU_CLK_DIV	4
+-#define HS400_FIXED_CIU_CLK_DIV		1
++#define HS400_FIXED_CIU_CLK_DIV		2
+ 
+ /* Minimal required clock frequency for cclkin, unit: HZ */
+ #define EXYNOS_CCLKIN_MIN	50000000
+diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+index 9ff0538ee83a..be7a7d332332 100644
+--- a/drivers/opp/core.c
++++ b/drivers/opp/core.c
+@@ -2102,6 +2102,75 @@ static int _opp_set_availability(struct device *dev, unsigned long freq,
+ 	return r;
+ }
+ 
++/**
++ * dev_pm_opp_adjust_voltage() - helper to change the voltage of an OPP
++ * @dev:		device for which we do this operation
++ * @freq:		OPP frequency to adjust voltage of
++ * @u_volt:		new OPP target voltage
++ * @u_volt_min:		new OPP min voltage
++ * @u_volt_max:		new OPP max voltage
++ *
++ * Return: -EINVAL for bad pointers, -ENOMEM if no memory available for the
++ * copy operation, returns 0 if no modifcation was done OR modification was
++ * successful.
++ */
++int dev_pm_opp_adjust_voltage(struct device *dev, unsigned long freq,
++			      unsigned long u_volt, unsigned long u_volt_min,
++			      unsigned long u_volt_max)
++
++{
++	struct opp_table *opp_table;
++	struct dev_pm_opp *tmp_opp, *opp = ERR_PTR(-ENODEV);
++	int r = 0;
++
++	/* Find the opp_table */
++	opp_table = _find_opp_table(dev);
++	if (IS_ERR(opp_table)) {
++		r = PTR_ERR(opp_table);
++		dev_warn(dev, "%s: Device OPP not found (%d)\n", __func__, r);
++		return r;
++	}
++
++	mutex_lock(&opp_table->lock);
++
++	/* Do we have the frequency? */
++	list_for_each_entry(tmp_opp, &opp_table->opp_list, node) {
++		if (tmp_opp->rate == freq) {
++			opp = tmp_opp;
++			break;
++		}
++	}
++
++	if (IS_ERR(opp)) {
++		r = PTR_ERR(opp);
++		goto adjust_unlock;
++	}
++
++	/* Is update really needed? */
++	if (opp->supplies->u_volt == u_volt)
++		goto adjust_unlock;
++
++	opp->supplies->u_volt = u_volt;
++	opp->supplies->u_volt_min = u_volt_min;
++	opp->supplies->u_volt_max = u_volt_max;
++
++	dev_pm_opp_get(opp);
++	mutex_unlock(&opp_table->lock);
++
++	/* Notify the voltage change of the OPP */
++	blocking_notifier_call_chain(&opp_table->head, OPP_EVENT_ADJUST_VOLTAGE,
++				     opp);
++
++	dev_pm_opp_put(opp);
++	goto adjust_put_table;
++
++adjust_unlock:
++	mutex_unlock(&opp_table->lock);
++adjust_put_table:
++	dev_pm_opp_put_opp_table(opp_table);
++	return r;
++}
++
+ /**
+  * dev_pm_opp_enable() - Enable a specific OPP
+  * @dev:	device for which we do this operation
+diff --git a/drivers/phy/samsung/phy-exynos5-usbdrd.c b/drivers/phy/samsung/phy-exynos5-usbdrd.c
+index e510732afb8b..7f6279fb4f8f 100644
+--- a/drivers/phy/samsung/phy-exynos5-usbdrd.c
++++ b/drivers/phy/samsung/phy-exynos5-usbdrd.c
+@@ -714,7 +714,9 @@ static int exynos5_usbdrd_phy_calibrate(struct phy *phy)
+ 	struct phy_usb_instance *inst = phy_get_drvdata(phy);
+ 	struct exynos5_usbdrd_phy *phy_drd = to_usbdrd_phy(inst);
+ 
+-	return exynos5420_usbdrd_phy_calibrate(phy_drd);
++	if (inst->phy_cfg->id == EXYNOS5_DRDPHY_UTMI)
++		return exynos5420_usbdrd_phy_calibrate(phy_drd);
++	return 0;
+ }
+ 
+ static const struct phy_ops exynos5_usbdrd_phy_ops = {
+diff --git a/drivers/regulator/s2mps11.c b/drivers/regulator/s2mps11.c
+index 5bc00884cf51..d9804787d835 100644
+--- a/drivers/regulator/s2mps11.c
++++ b/drivers/regulator/s2mps11.c
+@@ -1118,6 +1118,57 @@ static const struct regulator_desc s2mpu02_regulators[] = {
+ 	regulator_desc_s2mpu02_buck7(7),
+ };
+ 
++static int s2mps11_pmic_ethonoff(struct platform_device *pdev, bool onoff)
++{
++	struct sec_pmic_dev *iodev = dev_get_drvdata(pdev->dev.parent);
++	unsigned int reg_val = 0;
++	int ret = 0;
++
++	ret = regmap_read(iodev->regmap_pmic, S2MPS11_REG_L15CTRL, &reg_val);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to read S2MPS11_REG_L15CTRL value\n");
++		return ret;
++	}
++
++	ret = regmap_read(iodev->regmap_pmic, S2MPS11_REG_L17CTRL, &reg_val);
++	if (ret) {
++		dev_err(&pdev->dev, "failed to read S2MPS11_REG_L17CTRL value\n");
++		return ret;
++	}
++
++	if (onoff) {
++		/* ETH VDD0 ON */
++		ret = regmap_update_bits(iodev->regmap_pmic, S2MPS11_REG_L15CTRL, 0xFF, 0x72);
++		if (ret) {
++			dev_err(&pdev->dev, "cannot update S2MPS11 LDO CTRL15 register\n");
++			return ret;
++		}
++
++		/* ETH VDD1 ON */
++		ret = regmap_update_bits(iodev->regmap_pmic, S2MPS11_REG_L17CTRL, 0xFF, 0x72);
++		if (ret) {
++			dev_err(&pdev->dev, "cannot update S2MPS11 LDO CTRL17 register\n");
++			return ret;
++		}
++	} else {
++		/* ETH VDD0 OFF */
++		ret = regmap_update_bits(iodev->regmap_pmic, S2MPS11_REG_L15CTRL, 0x3F, 0x00);
++		if (ret) {
++			dev_err(&pdev->dev, "cannot update S2MPS11 LDO CTRL15 register\n");
++			return ret;
++		}
++
++		/* ETH VDD1 OFF */
++		ret = regmap_update_bits(iodev->regmap_pmic, S2MPS11_REG_L17CTRL, 0x3F, 0x00);
++		if (ret) {
++			dev_err(&pdev->dev, "cannot update S2MPS11 LDO CTRL17 register\n");
++			return ret;
++		}
++	}
++
++	return ret;
++}
++
+ static int s2mps11_pmic_probe(struct platform_device *pdev)
+ {
+ 	struct sec_pmic_dev *iodev = dev_get_drvdata(pdev->dev.parent);
+@@ -1244,6 +1295,34 @@ static int s2mps11_pmic_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++static void s2mps11_pmic_shutdown(struct platform_device *pdev)
++{
++	struct sec_pmic_dev *iodev = dev_get_drvdata(pdev->dev.parent);
++	unsigned int reg_val, ret;
++
++	ret = regmap_read(iodev->regmap_pmic, S2MPS11_REG_CTRL1, &reg_val);
++	if (ret < 0) {
++		dev_crit(&pdev->dev, "could not read S2MPS11_REG_CTRL1 value\n");
++	} else {
++		/*
++		 * s2mps11-pmic: S2MPS11_REG_CTRL1 reg value
++		 * is 00000000000000000000000000010000
++		 * clear the S2MPS11_REG_CTRL1 0x10 value to shutdown.
++		 */
++		if (reg_val & BIT(4)) {
++			ret = regmap_update_bits(iodev->regmap_pmic,
++						 S2MPS11_REG_CTRL1,
++						 BIT(4), BIT(0));
++			if (ret)
++				dev_crit(&pdev->dev,
++					 "could not write S2MPS11_REG_CTRL1 value\n");
++		}
++	}
++	s2mps11_pmic_ethonoff(pdev, false);
++	mdelay(10);
++	s2mps11_pmic_ethonoff(pdev, true);
++}
++
+ static const struct platform_device_id s2mps11_pmic_id[] = {
+ 	{ "s2mps11-regulator", S2MPS11X},
+ 	{ "s2mps13-regulator", S2MPS13X},
+@@ -1259,6 +1338,7 @@ static struct platform_driver s2mps11_pmic_driver = {
+ 		.name = "s2mps11-pmic",
+ 	},
+ 	.probe = s2mps11_pmic_probe,
++	.shutdown = s2mps11_pmic_shutdown,
+ 	.id_table = s2mps11_pmic_id,
+ };
+ 
+diff --git a/drivers/soc/samsung/Kconfig b/drivers/soc/samsung/Kconfig
+index 33ad0de2de3c..27fc59bbb520 100644
+--- a/drivers/soc/samsung/Kconfig
++++ b/drivers/soc/samsung/Kconfig
+@@ -7,6 +7,16 @@ menuconfig SOC_SAMSUNG
+ 
+ if SOC_SAMSUNG
+ 
++config EXYNOS_ASV
++	bool "Exynos Adaptive Supply Voltage support" if COMPILE_TEST
++	depends on (ARCH_EXYNOS && EXYNOS_CHIPID) || COMPILE_TEST
++	select EXYNOS_ASV_ARM if ARM && ARCH_EXYNOS
++
++# There is no need to enable these drivers for ARMv8
++config EXYNOS_ASV_ARM
++	bool "Exynos ASV ARMv7-specific driver extensions" if COMPILE_TEST
++	depends on EXYNOS_ASV
++
+ config EXYNOS_CHIPID
+ 	bool "Exynos Chipid controller driver" if COMPILE_TEST
+ 	depends on ARCH_EXYNOS || COMPILE_TEST
+diff --git a/drivers/soc/samsung/Makefile b/drivers/soc/samsung/Makefile
+index 3b6a8797416c..edd1d6ea064d 100644
+--- a/drivers/soc/samsung/Makefile
++++ b/drivers/soc/samsung/Makefile
+@@ -1,5 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
++obj-$(CONFIG_EXYNOS_ASV)	+= exynos-asv.o
++obj-$(CONFIG_EXYNOS_ASV_ARM)	+= exynos5422-asv.o
++
+ obj-$(CONFIG_EXYNOS_CHIPID)	+= exynos-chipid.o
+ obj-$(CONFIG_EXYNOS_PMU)	+= exynos-pmu.o
+ 
+diff --git a/drivers/soc/samsung/exynos-chipid.c b/drivers/soc/samsung/exynos-chipid.c
+index c55a47cfe617..25562dd0b206 100644
+--- a/drivers/soc/samsung/exynos-chipid.c
++++ b/drivers/soc/samsung/exynos-chipid.c
+@@ -45,7 +45,7 @@ static const char * __init product_id_to_soc_id(unsigned int product_id)
+ 	return NULL;
+ }
+ 
+-int __init exynos_chipid_early_init(void)
++static int __init exynos_chipid_early_init(void)
+ {
+ 	struct soc_device_attribute *soc_dev_attr;
+ 	struct soc_device *soc_dev;
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index 3ea9d8a3e6e8..22ce9f8c6946 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -668,6 +668,8 @@ static const struct of_device_id spidev_dt_ids[] = {
+ 	{ .compatible = "lwn,bk4" },
+ 	{ .compatible = "dh,dhcom-board" },
+ 	{ .compatible = "menlo,m53cpld" },
++	/* ODROID Modification */
++	{ .compatible = "odroid,spidev" },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, spidev_dt_ids);
+diff --git a/drivers/staging/fbtft/Kconfig b/drivers/staging/fbtft/Kconfig
+index cb61c2a772bd..9ae059f138c6 100644
+--- a/drivers/staging/fbtft/Kconfig
++++ b/drivers/staging/fbtft/Kconfig
+@@ -199,3 +199,17 @@ config FB_TFT_WATTEROTT
+ 	depends on FB_TFT
+ 	help
+ 	  Generic Framebuffer support for WATTEROTT
++
++config FB_TFT_HKTFT35
++	tristate "FB driver for the Hardkernel 3.5 inch TFT LCD"
++	depends on FB_TFT
++	help
++	  Generic Framebuffer support for the Hardkernel 3.5 inch TFT LCD
++	  that uses the ILI9488 LCD Controller
++
++config FB_TFT_HKTFT32
++	tristate "FB driver for the Hardkernel 3.2 inch TFT LCD"
++	depends on FB_TFT
++	help
++	  Generic Framebuffer support for the Hardkernel 3.2 inch TFT LCD
++	  that uses the ILI9340 LCD Controller
+diff --git a/drivers/staging/fbtft/Makefile b/drivers/staging/fbtft/Makefile
+index 27af43f32f81..4b1c434d6190 100644
+--- a/drivers/staging/fbtft/Makefile
++++ b/drivers/staging/fbtft/Makefile
+@@ -36,3 +36,5 @@ obj-$(CONFIG_FB_TFT_UC1611)      += fb_uc1611.o
+ obj-$(CONFIG_FB_TFT_UC1701)      += fb_uc1701.o
+ obj-$(CONFIG_FB_TFT_UPD161704)   += fb_upd161704.o
+ obj-$(CONFIG_FB_TFT_WATTEROTT)   += fb_watterott.o
++obj-$(CONFIG_FB_TFT_HKTFT35)     += fb_hktft35.o
++obj-$(CONFIG_FB_TFT_HKTFT32)     += fb_hktft32.o
+diff --git a/drivers/thermal/of-thermal.c b/drivers/thermal/of-thermal.c
+index dc5093be553e..0ff966096475 100644
+--- a/drivers/thermal/of-thermal.c
++++ b/drivers/thermal/of-thermal.c
+@@ -315,6 +315,20 @@ static int of_thermal_get_trip_type(struct thermal_zone_device *tz, int trip,
+ 	return 0;
+ }
+ 
++static int
++of_thermal_get_trip_irq_mode(struct thermal_zone_device *tz, int trip,
++			     bool *mode)
++{
++	struct __thermal_zone *data = tz->devdata;
++
++	if (trip >= data->ntrips || trip < 0)
++		return -EDOM;
++
++	*mode = data->trips[trip].irq_mode;
++
++	return 0;
++}
++
+ static int of_thermal_get_trip_temp(struct thermal_zone_device *tz, int trip,
+ 				    int *temp)
+ {
+@@ -397,6 +411,7 @@ static struct thermal_zone_device_ops of_thermal_ops = {
+ 	.set_mode = of_thermal_set_mode,
+ 
+ 	.get_trip_type = of_thermal_get_trip_type,
++	.get_trip_irq_mode = of_thermal_get_trip_irq_mode,
+ 	.get_trip_temp = of_thermal_get_trip_temp,
+ 	.set_trip_temp = of_thermal_set_trip_temp,
+ 	.get_trip_hyst = of_thermal_get_trip_hyst,
+@@ -830,6 +845,8 @@ static int thermal_of_populate_trip(struct device_node *np,
+ 		return ret;
+ 	}
+ 
++	trip->irq_mode = of_property_read_bool(np, "irq-mode");
++
+ 	/* Required for cooling map matching */
+ 	trip->np = np;
+ 	of_node_get(np);
+diff --git a/drivers/thermal/samsung/exynos_tmu.c b/drivers/thermal/samsung/exynos_tmu.c
+index fb2c55123a99..029f72f5c7d7 100644
+--- a/drivers/thermal/samsung/exynos_tmu.c
++++ b/drivers/thermal/samsung/exynos_tmu.c
+@@ -912,8 +912,6 @@ static int exynos_map_dt_data(struct platform_device *pdev)
+ 	case SOC_ARCH_EXYNOS4412:
+ 	case SOC_ARCH_EXYNOS5250:
+ 	case SOC_ARCH_EXYNOS5260:
+-	case SOC_ARCH_EXYNOS5420:
+-	case SOC_ARCH_EXYNOS5420_TRIMINFO:
+ 		data->tmu_set_trip_temp = exynos4412_tmu_set_trip_temp;
+ 		data->tmu_set_trip_hyst = exynos4412_tmu_set_trip_hyst;
+ 		data->tmu_initialize = exynos4412_tmu_initialize;
+@@ -932,6 +930,22 @@ static int exynos_map_dt_data(struct platform_device *pdev)
+ 			data->min_efuse_value = 0;
+ 		data->max_efuse_value = 100;
+ 		break;
++	case SOC_ARCH_EXYNOS5420:
++	case SOC_ARCH_EXYNOS5420_TRIMINFO:
++		data->tmu_set_trip_temp = exynos4412_tmu_set_trip_temp;
++		data->tmu_set_trip_hyst = exynos4412_tmu_set_trip_hyst;
++		data->tmu_initialize = exynos4412_tmu_initialize;
++		data->tmu_control = exynos4210_tmu_control;
++		data->tmu_read = exynos4412_tmu_read;
++		data->tmu_set_emulation = exynos4412_tmu_set_emulation;
++		data->tmu_clear_irqs = exynos4210_tmu_clear_irqs;
++		data->ntrip = 8;
++		data->gain = 8;
++		data->reference_voltage = 16;
++		data->efuse_value = 55;
++		data->min_efuse_value = 16;
++		data->max_efuse_value = 76;
++		break;
+ 	case SOC_ARCH_EXYNOS5433:
+ 		data->tmu_set_trip_temp = exynos5433_tmu_set_trip_temp;
+ 		data->tmu_set_trip_hyst = exynos5433_tmu_set_trip_hyst;
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index c28271817e43..d26b2fe42fad 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -412,6 +412,7 @@ static void handle_critical_trips(struct thermal_zone_device *tz,
+ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
+ {
+ 	enum thermal_trip_type type;
++	bool irq_mode = false;
+ 
+ 	/* Ignore disabled trip points */
+ 	if (test_bit(trip, &tz->trips_disabled))
+@@ -425,9 +426,14 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
+ 		handle_non_critical_trips(tz, trip);
+ 	/*
+ 	 * Alright, we handled this trip successfully.
+-	 * So, start monitoring again.
++	 * So, start monitoring in polling mode if
++	 * trip is not using irq HW support.
+ 	 */
+-	monitor_thermal_zone(tz);
++	if (tz->ops->get_trip_irq_mode)
++		tz->ops->get_trip_irq_mode(tz, trip, &irq_mode);
++
++	if (!irq_mode)
++		monitor_thermal_zone(tz);
+ }
+ 
+ static void update_temperature(struct thermal_zone_device *tz)
+diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+index aa99edb4dff7..e3ede8af79cc 100644
+--- a/drivers/thermal/thermal_sysfs.c
++++ b/drivers/thermal/thermal_sysfs.c
+@@ -21,6 +21,8 @@
+ 
+ #include "thermal_core.h"
+ 
++#define TRIP_ATTR_NUM 4
++
+ /* sys I/F for thermal zone */
+ 
+ static ssize_t
+@@ -166,6 +168,28 @@ trip_point_temp_show(struct device *dev, struct device_attribute *attr,
+ 	return sprintf(buf, "%d\n", temperature);
+ }
+ 
++static ssize_t
++trip_point_irq_mode_show(struct device *dev, struct device_attribute *attr,
++			 char *buf)
++{
++	struct thermal_zone_device *tz = to_thermal_zone(dev);
++	int trip, ret;
++	bool mode;
++
++	if (!tz->ops->get_trip_irq_mode)
++		return -EPERM;
++
++	if (sscanf(attr->attr.name, "trip_point_%d_irq", &trip) != 1)
++		return -EINVAL;
++
++	ret = tz->ops->get_trip_irq_mode(tz, trip, &mode);
++
++	if (ret)
++		return ret;
++
++	return sprintf(buf, "%d\n", mode);
++}
++
+ static ssize_t
+ trip_point_hyst_store(struct device *dev, struct device_attribute *attr,
+ 		      const char *buf, size_t count)
+@@ -520,10 +544,19 @@ static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
+ 	if (!tz->trip_type_attrs)
+ 		return -ENOMEM;
+ 
++	tz->trip_irq_mode_attrs = kcalloc(tz->trips,
++					  sizeof(*tz->trip_irq_mode_attrs),
++					  GFP_KERNEL);
++	if (!tz->trip_irq_mode_attrs) {
++		kfree(tz->trip_type_attrs);
++		return -ENOMEM;
++	}
++
+ 	tz->trip_temp_attrs = kcalloc(tz->trips, sizeof(*tz->trip_temp_attrs),
+ 				      GFP_KERNEL);
+ 	if (!tz->trip_temp_attrs) {
+ 		kfree(tz->trip_type_attrs);
++		kfree(tz->trip_irq_mode_attrs);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -533,14 +566,17 @@ static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
+ 					      GFP_KERNEL);
+ 		if (!tz->trip_hyst_attrs) {
+ 			kfree(tz->trip_type_attrs);
++			kfree(tz->trip_irq_mode_attrs);
+ 			kfree(tz->trip_temp_attrs);
+ 			return -ENOMEM;
+ 		}
+ 	}
+ 
+-	attrs = kcalloc(tz->trips * 3 + 1, sizeof(*attrs), GFP_KERNEL);
++	attrs = kcalloc(tz->trips * TRIP_ATTR_NUM + 1, sizeof(*attrs),
++			GFP_KERNEL);
+ 	if (!attrs) {
+ 		kfree(tz->trip_type_attrs);
++		kfree(tz->trip_irq_mode_attrs);
+ 		kfree(tz->trip_temp_attrs);
+ 		if (tz->ops->get_trip_hyst)
+ 			kfree(tz->trip_hyst_attrs);
+@@ -559,6 +595,19 @@ static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
+ 		tz->trip_type_attrs[indx].attr.show = trip_point_type_show;
+ 		attrs[indx] = &tz->trip_type_attrs[indx].attr.attr;
+ 
++		/* create trip irq_mode attribute */
++		snprintf(tz->trip_irq_mode_attrs[indx].name,
++			 THERMAL_NAME_LENGTH, "trip_point_%d_irq", indx);
++
++		sysfs_attr_init(&tz->trip_irq_mode_attrs[indx].attr.attr);
++		tz->trip_irq_mode_attrs[indx].attr.attr.name =
++			tz->trip_irq_mode_attrs[indx].name;
++		tz->trip_irq_mode_attrs[indx].attr.attr.mode = S_IRUGO;
++		tz->trip_irq_mode_attrs[indx].attr.show =
++			trip_point_irq_mode_show;
++		attrs[indx + tz->trips * 3] =
++			&tz->trip_irq_mode_attrs[indx].attr.attr;
++
+ 		/* create trip temp attribute */
+ 		snprintf(tz->trip_temp_attrs[indx].name, THERMAL_NAME_LENGTH,
+ 			 "trip_point_%d_temp", indx);
+@@ -595,7 +644,7 @@ static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
+ 		attrs[indx + tz->trips * 2] =
+ 					&tz->trip_hyst_attrs[indx].attr.attr;
+ 	}
+-	attrs[tz->trips * 3] = NULL;
++	attrs[tz->trips * TRIP_ATTR_NUM] = NULL;
+ 
+ 	tz->trips_attribute_group.attrs = attrs;
+ 
+diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
+index 427a993c7f57..c844d513537e 100644
+--- a/drivers/video/Kconfig
++++ b/drivers/video/Kconfig
+@@ -19,6 +19,8 @@ source "drivers/gpu/ipu-v3/Kconfig"
+ 
+ source "drivers/gpu/drm/Kconfig"
+ 
++source "drivers/gpu/arm/Kconfig"
++
+ menu "Frame buffer Devices"
+ source "drivers/video/fbdev/Kconfig"
+ endmenu
+diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
+index b8197ab014f2..747861816f4f 100644
+--- a/include/linux/pm_opp.h
++++ b/include/linux/pm_opp.h
+@@ -22,6 +22,7 @@ struct opp_table;
+ 
+ enum dev_pm_opp_event {
+ 	OPP_EVENT_ADD, OPP_EVENT_REMOVE, OPP_EVENT_ENABLE, OPP_EVENT_DISABLE,
++	OPP_EVENT_ADJUST_VOLTAGE,
+ };
+ 
+ /**
+@@ -113,6 +114,10 @@ int dev_pm_opp_add(struct device *dev, unsigned long freq,
+ void dev_pm_opp_remove(struct device *dev, unsigned long freq);
+ void dev_pm_opp_remove_all_dynamic(struct device *dev);
+ 
++int dev_pm_opp_adjust_voltage(struct device *dev, unsigned long freq,
++			      unsigned long u_volt, unsigned long u_volt_min,
++			      unsigned long u_volt_max);
++
+ int dev_pm_opp_enable(struct device *dev, unsigned long freq);
+ 
+ int dev_pm_opp_disable(struct device *dev, unsigned long freq);
+@@ -242,6 +247,14 @@ static inline void dev_pm_opp_remove_all_dynamic(struct device *dev)
+ {
+ }
+ 
++static inline int
++dev_pm_opp_adjust_voltage(struct device *dev, unsigned long freq,
++			  unsigned long u_volt, unsigned long u_volt_min,
++			  unsigned long u_volt_max)
++{
++	return 0;
++}
++
+ static inline int dev_pm_opp_enable(struct device *dev, unsigned long freq)
+ {
+ 	return 0;
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index e45659c75920..39e18a2d7366 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -103,6 +103,7 @@ struct thermal_zone_device_ops {
+ 		enum thermal_device_mode);
+ 	int (*get_trip_type) (struct thermal_zone_device *, int,
+ 		enum thermal_trip_type *);
++	int (*get_trip_irq_mode) (struct thermal_zone_device *, int, bool *);
+ 	int (*get_trip_temp) (struct thermal_zone_device *, int, int *);
+ 	int (*set_trip_temp) (struct thermal_zone_device *, int, int);
+ 	int (*get_trip_hyst) (struct thermal_zone_device *, int, int *);
+@@ -196,6 +197,7 @@ struct thermal_zone_device {
+ 	struct thermal_attr *trip_temp_attrs;
+ 	struct thermal_attr *trip_type_attrs;
+ 	struct thermal_attr *trip_hyst_attrs;
++	struct thermal_attr *trip_irq_mode_attrs;
+ 	void *devdata;
+ 	int trips;
+ 	unsigned long trips_disabled;	/* bitmap for disabled trips */
+@@ -364,6 +366,8 @@ struct thermal_zone_of_device_ops {
+  * @temperature: temperature value in miliCelsius
+  * @hysteresis: relative hysteresis in miliCelsius
+  * @type: trip point type
++ * @irq_mode: to not use polling in framework set support of HW irq (which will
++ *	      be triggered when temperature reaches this level).
+  */
+ 
+ struct thermal_trip {
+@@ -371,6 +375,7 @@ struct thermal_trip {
+ 	int temperature;
+ 	int hysteresis;
+ 	enum thermal_trip_type type;
++	bool irq_mode;
+ };
+ 
+ /* Function declarations */
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index f6bf4cfbea23..5976db05878f 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -651,7 +651,7 @@ static const struct snd_kcontrol_new max98090_snd_controls[] = {
+ 
+ 	SOC_DOUBLE_R_TLV("Headphone Volume", M98090_REG_LEFT_HP_VOLUME,
+ 		M98090_REG_RIGHT_HP_VOLUME, M98090_HPVOLL_SHIFT,
+-		M98090_HPVOLL_NUM - 1, 0, max98090_hp_tlv),
++		M98090_HPVOLL_NUM - 1 + 24, 0, max98090_hp_tlv),
+ 
+ 	SOC_DOUBLE_R_RANGE_TLV("Speaker Volume",
+ 		M98090_REG_LEFT_SPK_VOLUME, M98090_REG_RIGHT_SPK_VOLUME,

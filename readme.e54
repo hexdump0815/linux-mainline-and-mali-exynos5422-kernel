@@ -1,0 +1,60 @@
+TODO: default governor to ondemand?
+INFO: based on memeka tree commit 12f18495dc94dccd8b853ae54c3e3ab054843ebb
+
+# name: -stb-e54 + no auto
+
+cp /compile/doc/stable-ex/config.e54 /compile/source/linux-stable-ex/.config
+cd /compile/source/linux-stable-ex
+# memeka changes
+patch -p1 < /compile/doc/stable-ex/misc.e54/5.4.18-diff.patch
+# memeka additional files
+tar xzf /compile/doc/stable-ex/misc.e54/5.4.3-added.tar.gz
+
+# git pull
+export ARCH=arm
+# make odroixu4_defconfig + fix options - see misc.e54/options
+make oldconfig
+make -j 4 zImage dtbs modules
+export kver=`make kernelrelease`
+echo ${kver}
+# remove debug info if there and wanted
+# find . -type f -name '*.ko' | sudo xargs -n 1 objcopy --strip-unneeded
+make modules_install
+# make headers_install INSTALL_HDR_PATH=/usr
+cp -v .config /boot/config-${kver}
+cp -v arch/arm/boot/zImage /boot/zImage-${kver}
+mkimage -A arm -O linux -T kernel -C none -a 0x00208000 -e 0x00208000 -n linux-${kver} -d arch/arm/boot/zImage /boot/uImage-${kver}
+mkdir /boot/dtb-${kver}
+cp -v arch/arm/boot/dts/exynos542**.dtb /boot/dtb-${kver}/
+cp -v System.map /boot/System.map-${kver}
+cd /boot
+update-initramfs -c -k ${kver}
+mkimage -A arm -O linux -T ramdisk -a 0x0 -e 0x0 -n initrd.img-${kver} -d initrd.img-${kver} uInitrd-${kver}
+tar cvzf /compile/source/linux-stable-ex/${kver}.tar.gz /boot/*-${kver} /lib/modules/${kver}
+cp -v /compile/doc/stable-ex/config.e54 /compile/doc/stable-ex/config.e54.old
+cp -v /compile/source/linux-stable-ex/.config /compile/doc/stable-ex/config.e54
+cp -v /compile/source/linux-stable-ex/.config /compile/doc/stable-ex/config.e54-${kver}
+cp -v /compile/source/linux-stable-ex/*.tar.gz /compile/result/stable-ex
+cd /compile/source/linux-stable-ex
+make distclean
+rm ${kver}.tar.gz
+
+# boot.ini when using the legacy armbian u-boot 2017.05
+ODROIDXU-UBOOT-CONFIG
+
+setenv kver "5.4.3-stb-e54+"
+
+setenv initrd_high "0xffffffff"
+setenv fdt_high "0xffffffff"
+
+fdt addr 0x44000000
+fdt rm /cec@101B0000
+
+ext4load mmc 0:1 0x40008000 zImage-${kver}
+ext4load mmc 0:1 0x42000000 uInitrd-${kver}
+ext4load mmc 0:1 0x44000000 dtb-${kver}/exynos5422-odroidxu4.dtb
+
+setenv bootargs "console=ttySAC2,115200n8 smsc95xx.macaddr=00:1e:06:61:7a:55 root=/dev/mmcblk1p3 ro loglevel=8 rootwait net.ifnames=0 ipv6.disable=1 fsck.repair=yes"
+# unclear if needed: video=HDMI-A-1:e drm.edid_firmware=edid/1024x768.bin
+
+bootz 0x40008000 0x42000000 0x44000000
