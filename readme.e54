@@ -9,6 +9,8 @@ cd /compile/source/linux-stable-ex
 patch -p1 < /compile/doc/stable-ex/misc.e54/5.4.18-diff.patch
 # memeka additional files
 tar xzf /compile/doc/stable-ex/misc.e54/5.4.3-added.tar.gz
+# set mac addr on kernel cmdline - otherwise a random one is generated
+patch -p1 < /compile/doc/stable/misc.av7/gen-stmmac-mac-addr-on-kernel-cmdline-v5.3.patch
 
 # git pull
 export ARCH=arm
@@ -35,9 +37,6 @@ cp -v /compile/doc/stable-ex/config.e54 /compile/doc/stable-ex/config.e54.old
 cp -v /compile/source/linux-stable-ex/.config /compile/doc/stable-ex/config.e54
 cp -v /compile/source/linux-stable-ex/.config /compile/doc/stable-ex/config.e54-${kver}
 cp -v /compile/source/linux-stable-ex/*.tar.gz /compile/result/stable-ex
-cd /compile/source/linux-stable-ex
-make distclean
-rm ${kver}.tar.gz
 
 # boot.ini when using the legacy armbian u-boot 2017.05
 ODROIDXU-UBOOT-CONFIG
