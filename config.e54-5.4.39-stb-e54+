@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm 5.4.35 Kernel Configuration
+# Linux/arm 5.4.39 Kernel Configuration
 #
 
 #
@@ -2510,7 +2510,6 @@ CONFIG_TOUCHSCREEN_SURFACE3_SPI=m
 # CONFIG_TOUCHSCREEN_ZFORCE is not set
 # CONFIG_TOUCHSCREEN_ROHM_BU21023 is not set
 # CONFIG_TOUCHSCREEN_IQS5XX is not set
-# CONFIG_TOUCHSCREEN_DWAV_USB_MT is not set
 CONFIG_INPUT_MISC=y
 CONFIG_INPUT_AD714X=m
 CONFIG_INPUT_AD714X_I2C=m

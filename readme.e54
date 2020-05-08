@@ -9,12 +9,15 @@ cd /compile/source/linux-stable-ex
 patch -p1 < /compile/doc/stable-ex/misc.e54/5.4.18-diff.patch
 # memeka additional files
 tar xzf /compile/doc/stable-ex/misc.e54/5.4.3-added.tar.gz
-# set mac addr on kernel cmdline - otherwise a random one is generated
-patch -p1 < /compile/doc/stable/misc.av7/gen-stmmac-mac-addr-on-kernel-cmdline-v5.3.patch
+# set mac addr on kernel cmdline - otherwise a random one is generated - not needed as other eth if on xu4 etc.
+#patch -p1 < /compile/doc/stable/misc.av7/gen-stmmac-mac-addr-on-kernel-cmdline-v5.3.patch
+# add mali gpu support
+patch -p1 < /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete.patch
+cp -r /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete/drivers/gpu/arm drivers/gpu
 
 # git pull
 export ARCH=arm
-# make odroixu4_defconfig + fix options - see misc.e54/options
+# make odroidxu4_defconfig + fix options - see misc.e54/options
 make oldconfig
 make -j 4 zImage dtbs modules
 export kver=`make kernelrelease`
