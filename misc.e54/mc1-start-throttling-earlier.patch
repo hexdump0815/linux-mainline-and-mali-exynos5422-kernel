@@ -1,0 +1,18 @@
+--- arch/arm/boot/dts/exynos5422-odroidmc1-trip-points.dtsi.org	2020-05-10 11:58:19.204015498 +0200
++++ arch/arm/boot/dts/exynos5422-odroidmc1-trip-points.dtsi	2020-05-10 12:08:48.424970432 +0200
+@@ -16,13 +16,13 @@
+ 
+ 			trips {
+ 				UNIQIFY(cpu_alert0): cpu-alert-0 {
+-					temperature = <80000>; /* millicelsius */
++					temperature = <70000>; /* millicelsius */
+ 					hysteresis = <2500>; /* millicelsius */
+ 					type = "passive";
+ 					irq-mode;
+ 				};
+ 				UNIQIFY(cpu_alert1): cpu-alert-1 {
+-					temperature = <85000>; /* millicelsius */
++					temperature = <80000>; /* millicelsius */
+ 					hysteresis = <2500>; /* millicelsius */
+ 					type = "passive";
+ 					irq-mode;
