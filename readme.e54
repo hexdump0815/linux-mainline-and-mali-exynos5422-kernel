@@ -52,9 +52,10 @@ cp -v /compile/source/linux-stable-ex/.config /compile/doc/stable-ex/config.e54-
 cp -v /compile/source/linux-stable-ex/*.tar.gz /compile/result/stable-ex
 
 # boot.ini when using the legacy armbian u-boot 2017.05
+cat /boot/boot.ini
 ODROIDXU-UBOOT-CONFIG
 
-setenv kver "5.4.3-stb-e54+"
+setenv kver "5.4.35-stb-e54+"
 
 setenv initrd_high "0xffffffff"
 setenv fdt_high "0xffffffff"
@@ -64,9 +65,9 @@ fdt rm /cec@101B0000
 
 ext4load mmc 0:1 0x40008000 zImage-${kver}
 ext4load mmc 0:1 0x42000000 uInitrd-${kver}
-ext4load mmc 0:1 0x44000000 dtb-${kver}/exynos5422-odroidxu4.dtb
+#ext4load mmc 0:1 0x44000000 dtb-${kver}/exynos5422-odroidxu4.dtb
+ext4load mmc 0:1 0x44000000 dtb-${kver}/exynos5422-odroidmc1.dtb
 
-setenv bootargs "console=ttySAC2,115200n8 smsc95xx.macaddr=00:1e:06:61:7a:55 root=/dev/mmcblk1p3 ro loglevel=8 rootwait net.ifnames=0 ipv6.disable=1 fsck.repair=yes"
-# unclear if needed: video=HDMI-A-1:e drm.edid_firmware=edid/1024x768.bin
+setenv bootargs "console=ttySAC2,115200n8 root=/dev/mmcblk1p3 ro loglevel=8 rootwait net.ifnames=0 ipv6.disable=1 fsck.repair=yes"
 
 bootz 0x40008000 0x42000000 0x44000000
