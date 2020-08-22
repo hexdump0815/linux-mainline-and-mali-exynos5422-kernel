@@ -5,15 +5,16 @@ INFO: based on memeka tree commit 12f18495dc94dccd8b853ae54c3e3ab054843ebb
 
 cp /compile/doc/stable-ex/config.e54 /compile/source/linux-stable-ex/.config
 cd /compile/source/linux-stable-ex
-# memeka changes
-patch -p1 < /compile/doc/stable-ex/misc.e54/5.4.18-diff.patch
-# memeka additional files
-tar xzf /compile/doc/stable-ex/misc.e54/5.4.3-added.tar.gz
-# set mac addr on kernel cmdline - otherwise a random one is generated - not needed as other eth if on xu4 etc.
-#patch -p1 < /compile/doc/stable/misc.av7/gen-stmmac-mac-addr-on-kernel-cmdline-v5.3.patch
-# add mali gpu support
-patch -p1 < /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete.patch
-cp -r /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete/drivers/gpu/arm drivers/gpu
+
+# no longer needed since the odroid tree is used as they are in there
+# # memeka changes
+# patch -p1 < /compile/doc/stable-ex/misc.e54/5.4.18-diff.patch
+# # memeka additional files
+# tar xzf /compile/doc/stable-ex/misc.e54/5.4.3-added.tar.gz
+# # add mali gpu support
+# patch -p1 < /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete.patch
+# cp -r /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete/drivers/gpu/arm drivers/gpu
+
 # create and enable mc1 dtb - it is basically an xu4 one with hc1 colling config (i.e. no fan)
 # it should also work for a fanless xu4 most probably although with quite a bit of thermal throttling
 cp arch/arm/boot/dts/exynos5422-odroidxu4.dts arch/arm/boot/dts/exynos5422-odroidmc1.dts
