@@ -17,7 +17,7 @@
 # patch -p1 < /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete.patch
 # cp -r /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete/drivers/gpu/arm drivers/gpu
 
-# create and enable mc1 dtb - it is basically an xu4 one with hc1 colling config (i.e. no fan)
+# create and enable mc1 dtb - it is basically an xu4 one with hc1 cooling config (i.e. no fan)
 # it should also work for a fanless xu4 most probably although with quite a bit of thermal throttling
 cp arch/arm/boot/dts/exynos5422-odroidxu4.dts arch/arm/boot/dts/exynos5422-odroidmc1.dts
 sed -i 's,exynos5422-odroidxu3-common.dtsi,exynos5422-odroidmc1-common.dtsi,g' arch/arm/boot/dts/exynos5422-odroidmc1.dts
@@ -31,7 +31,7 @@ patch -p1 < /compile/doc/stable-ex/misc.e54/mc1-enable-dtb.patch
 cp /compile/doc/stable-ex/config.e54 /compile/source/linux-stable-ex/.config
 cd /compile/source/linux-stable-ex
 
-# git pull
+# git pull --force origin odroid-5.4.y
 export ARCH=arm
 # make odroidxu4_defconfig + fix options - see misc.e54/options
 make oldconfig
