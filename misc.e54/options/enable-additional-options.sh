@@ -20,6 +20,16 @@ cd /compile/source/linux-stable-ex
 ./scripts/config -d CONFIG_REISERFS_FS
 ./scripts/config -d CONFIG_OCFS2_FS
 
+./scripts/config --set-str CONFIG_MALI_PLATFORM_NAME "devicetree"
+./scripts/config -d CONFIG_MALI_IRQ_LATENCY
+./scripts/config -d CONFIG_MALI_KUTF
+./scripts/config -d CONFIG_MALI_FENCE_DEBUG
+./scripts/config -d CONFIG_DRM_SCHED
+./scripts/config -d CONFIG_DRM_PANFROST
+
+./scripts/config -d CONFIG_LOCALVERSION_AUTO
+./scripts/config --set-str CONFIG_LOCALVERSION "-stb-e54"
+
 for i in `cat /compile/doc/stable-ex/misc.e54/options/additional-options-*-yes.txt`; do
   echo $i
   ./scripts/config -e $i

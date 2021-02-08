@@ -4,18 +4,8 @@
 # - /compile/result/stable-ex - the resulting kernel, modules etc. tar.gz files
 # name: stb-e54
 
-# INFO: based on memeka tree commit 12f18495dc94dccd8b853ae54c3e3ab054843ebb
-# TODO: default governor to ondemand?
-
-# patches:
-# no longer needed since the odroid tree is used as they are in there
-# # memeka changes
-# patch -p1 < /compile/doc/stable-ex/misc.e54/5.4.18-diff.patch
-# # memeka additional files
-# tar xzf /compile/doc/stable-ex/misc.e54/5.4.3-added.tar.gz
-# # add mali gpu support
-# patch -p1 < /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete.patch
-# cp -r /compile/doc/stable-ex/misc.e54/exynos5422-mali-complete/drivers/gpu/arm drivers/gpu
+# INFO: based on odroid tree commit: 5477551868b38959872536e9600ab3d2491b869a
+#                       from branch: odroid-5.4.y
 
 # create and enable mc1 dtb - it is basically an xu4 one with hc1 cooling config (i.e. no fan)
 # it should also work for a fanless xu4 most probably although with quite a bit of thermal throttling
@@ -24,16 +14,18 @@ sed -i 's,exynos5422-odroidxu3-common.dtsi,exynos5422-odroidmc1-common.dtsi,g' a
 cp arch/arm/boot/dts/exynos5422-odroidxu3-common.dtsi arch/arm/boot/dts/exynos5422-odroidmc1-common.dtsi
 sed -i 's,exynos5422-odroidxu3-trip-points.dtsi,exynos5422-odroidmc1-trip-points.dtsi,g' arch/arm/boot/dts/exynos5422-odroidmc1-common.dtsi
 cp arch/arm/boot/dts/exynos5422-odroidhc1-trip-points.dtsi arch/arm/boot/dts/exynos5422-odroidmc1-trip-points.dtsi
-patch -p0 < /compile/doc/stable-ex/misc.e54/mc1-reduce-cpu-clocks.patch
-patch -p0 < /compile/doc/stable-ex/misc.e54/mc1-start-throttling-earlier.patch
-patch -p1 < /compile/doc/stable-ex/misc.e54/mc1-enable-dtb.patch
+patch -p0 < /compile/doc/stable-ex/misc.e54/patches/mc1-reduce-cpu-clocks.patch
+patch -p0 < /compile/doc/stable-ex/misc.e54/patches/mc1-start-throttling-earlier.patch
+patch -p1 < /compile/doc/stable-ex/misc.e54/patches/mc1-enable-dtb.patch
 
 cp /compile/doc/stable-ex/config.e54 /compile/source/linux-stable-ex/.config
 cd /compile/source/linux-stable-ex
 
 # git pull --force origin odroid-5.4.y
 export ARCH=arm
-# make odroidxu4_defconfig + fix options - see misc.e54/options
+# make odroidxu4_defconfig
+# /compile/doc/stable-ex/misc.e54/options/enable-docker-options.sh
+# /compile/doc/stable-ex/misc.e54/options/enable-additional-options.sh
 make oldconfig
 make -j 4 zImage dtbs modules
 cd tools/perf

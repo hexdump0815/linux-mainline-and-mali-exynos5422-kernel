@@ -1,6 +1,2 @@
-https://github.com/hardkernel/linux.git
-branch: odroid-5.4.y
-
-old - no longer used:
-origin	https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git (fetch)
-origin	https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git (push)
+origin	https://github.com/hardkernel/linux.git (fetch)
+origin	https://github.com/hardkernel/linux.git (push)
