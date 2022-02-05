@@ -1,12 +1,17 @@
 # directories:
 # - /compile/doc/stable-ex - the files in this dir
-# - /compile/source/linux-stable-ex - the kernel sources checked out from gitrepo
+# - /compile/source/linux-stable-e54 - the kernel sources checked out from gitrepo
 # - /compile/result/stable-ex - the resulting kernel, modules etc. tar.gz files
+# - /compile/doc/kernel-config-options - https://github.com/hexdump0815/kernel-config-options
 # name: stb-e54
 
-# INFO: based on odroid tree commit: 5477551868b38959872536e9600ab3d2491b869a
+# INFO: based on odroid tree commit: cb40468c21c8579eae15107ffbfe11db1989f889 (5.4.167)
 #                       from branch: odroid-5.4.y
+#       git pull --force origin odroid-5.4.y
 
+cd /compile/source/linux-stable-e54
+
+# patches:
 # create and enable mc1 dtb - it is basically an xu4 one with hc1 cooling config (i.e. no fan)
 # it should also work for a fanless xu4 most probably although with quite a bit of thermal throttling
 cp arch/arm/boot/dts/exynos5422-odroidxu4.dts arch/arm/boot/dts/exynos5422-odroidmc1.dts
@@ -18,15 +23,10 @@ patch -p0 < /compile/doc/stable-ex/misc.e54/patches/mc1-reduce-cpu-clocks.patch
 patch -p0 < /compile/doc/stable-ex/misc.e54/patches/mc1-start-throttling-earlier.patch
 patch -p1 < /compile/doc/stable-ex/misc.e54/patches/mc1-enable-dtb.patch
 
-cp /compile/doc/stable-ex/config.e54 /compile/source/linux-stable-ex/.config
-cd /compile/source/linux-stable-ex
-
-# git pull --force origin odroid-5.4.y
 export ARCH=arm
-# make odroidxu4_defconfig
-# /compile/doc/stable-ex/misc.e54/options/enable-docker-options.sh
-# /compile/doc/stable-ex/misc.e54/options/enable-additional-options.sh
-make oldconfig
+scripts/kconfig/merge_config.sh -m arch/arm/configs/odroidxu4_defconfig /compile/doc/kernel-config-options/docker-options.cfg /compile/doc/kernel-config-options/options-to-remove-generic.cfg /compile/doc/stable-ex/misc.e54/options/options-to-remove-special.cfg /compile/doc/kernel-config-options/additional-options-generic.cfg /compile/doc/kernel-config-options/additional-options-armv7l.cfg /compile/doc/stable-ex/misc.e54/options/additional-options-special.cfg
+( cd /compile/doc/kernel-config-options ; git rev-parse --verify HEAD ) > /compile/doc/stable-ex/misc.e54/options/kernel-config-options.version
+make olddefconfig
 make -j 4 zImage dtbs modules
 cd tools/perf
 make
@@ -46,7 +46,7 @@ cp -v tools/power/cpupower/libcpupower.so.0.0.1 /lib/modules/${kver}/tools/libcp
 mkdir -p /lib/modules/${kver}/extra
 mv /lib/modules/${kver}/kernel/drivers/gpu/arm/midgard/mali_kbase.ko /lib/modules/${kver}/extra
 rm -rf /lib/modules/${kver}/kernel/drivers/gpu/arm
-tar cvzf /compile/source/linux-stable-ex/${kver}-mali-exynos5422.tar.gz /lib/modules/${kver}/extra
+tar cvzf /compile/source/linux-stable-e54/${kver}-mali-exynos5422.tar.gz /lib/modules/${kver}/extra
 rm -rf /lib/modules/${kver}/extra
 # redo the depmod without the mali module
 depmod ${kver}
@@ -60,11 +60,11 @@ cp -v System.map /boot/System.map-${kver}
 cd /boot
 update-initramfs -c -k ${kver}
 mkimage -A arm -O linux -T ramdisk -a 0x0 -e 0x0 -n initrd.img-${kver} -d initrd.img-${kver} uInitrd-${kver}
-tar cvzf /compile/source/linux-stable-ex/${kver}.tar.gz /boot/*-${kver} /lib/modules/${kver}
+tar cvzf /compile/source/linux-stable-e54/${kver}.tar.gz /boot/*-${kver} /lib/modules/${kver}
 cp -v /compile/doc/stable-ex/config.e54 /compile/doc/stable-ex/config.e54.old
-cp -v /compile/source/linux-stable-ex/.config /compile/doc/stable-ex/config.e54
-cp -v /compile/source/linux-stable-ex/.config /compile/doc/stable-ex/config.e54-${kver}
-cp -v /compile/source/linux-stable-ex/*.tar.gz /compile/result/stable-ex
+cp -v /compile/source/linux-stable-e54/.config /compile/doc/stable-ex/config.e54
+cp -v /compile/source/linux-stable-e54/.config /compile/doc/stable-ex/config.e54-${kver}
+cp -v /compile/source/linux-stable-e54/*.tar.gz /compile/result/stable-ex
 
 
 # boot.ini when using the legacy armbian u-boot 2017.05
