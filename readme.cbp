@@ -1,0 +1,88 @@
+# directories:
+# - /compile/doc/stable-ex - the files in this dir
+# - /compile/source/linux-odroid-cbp - the kernel sources checked out from gitrepo
+# - /compile/result/stable-ex - the resulting kernel, modules etc. tar.gz files
+# - /compile/doc/kernel-config-options - https://github.com/hexdump0815/kernel-config-options
+# name: odr-cbp
+
+cd /compile/source/linux-odroid-cbp
+
+# patches:
+# this one is needed to make suspend work with v5.4+
+patch -p1 < /compile/doc/stable-ex/misc.cbe/patches/snow-v5-4-suspend-fix.patch
+# add mali gpu support
+#patch -p1 < /compile/doc/stable-ex/misc.e54/patches/exynos5422-mali-complete.patch
+#cp -r /compile/doc/stable-ex/misc.e54/patches/exynos5422-mali-complete/drivers/gpu/arm drivers/gpu
+# fix mali compile for v5.15
+#patch -p0 < /compile/doc/stable-ex/misc.cbp/patches/fix-mali-compile-v5.15.patch
+# enable the gpu for peach pit and peach pi
+#patch -p1 < /compile/doc/stable-ex/misc.cbp/patches/enable-gpu.patch
+
+export ARCH=arm
+scripts/kconfig/merge_config.sh -m /compile/doc/stable-ex/misc.cbp/misc/config.cbp-base /compile/doc/kernel-config-options/docker-options.cfg /compile/doc/kernel-config-options/options-to-remove-generic.cfg /compile/doc/stable-ex/misc.cbp/options/options-to-remove-special.cfg /compile/doc/kernel-config-options/additional-options-generic.cfg /compile/doc/kernel-config-options/additional-options-armv7l.cfg /compile/doc/stable-ex/misc.cbp/options/additional-options-special.cfg
+( cd /compile/doc/kernel-config-options ; git rev-parse --verify HEAD ) > /compile/doc/stable-ex/misc.cbp/options/kernel-config-options.version
+make olddefconfig
+make -j 8 zImage dtbs modules
+cd tools/perf
+make
+cd ../power/cpupower
+make
+cd ../../..
+export kver=`make kernelrelease`
+echo ${kver}
+# remove debug info if there and not wanted
+# find . -type f -name '*.ko' | sudo xargs -n 1 objcopy --strip-unneeded
+make modules_install
+mkdir -p /lib/modules/${kver}/tools
+cp -v tools/perf/perf /lib/modules/${kver}/tools
+cp -v tools/power/cpupower/cpupower /lib/modules/${kver}/tools
+cp -v tools/power/cpupower/libcpupower.so.0.0.1 /lib/modules/${kver}/tools/libcpupower.so.0
+# move away the exynos5420 mali module and tar it separately beforehand
+mkdir -p /lib/modules/${kver}/extra
+mv /lib/modules/${kver}/kernel/drivers/gpu/arm/midgard/mali_kbase.ko /lib/modules/${kver}/extra
+rm -rf /lib/modules/${kver}/kernel/drivers/gpu/arm
+tar cvzf /compile/source/linux-odroid-cbp/${kver}-mali-exynos5420.tar.gz /lib/modules/${kver}/extra
+rm -rf /lib/modules/${kver}/extra
+# redo the depmod without the mali module
+depmod ${kver}
+# make headers_install INSTALL_HDR_PATH=/usr
+cp -v .config /boot/config-${kver}
+cp -v arch/arm/boot/zImage /boot/zImage-${kver}
+mkdir -p /boot/dtb-${kver}
+cp -v arch/arm/boot/dts/exynos5420-peach-pit.dtb /boot/dtb-${kver}
+cp -v arch/arm/boot/dts/exynos5800-peach-pi.dtb /boot/dtb-${kver}
+cp -v System.map /boot/System.map-${kver}
+# start chromebook special - required: apt-get install liblz4-tool vboot-kernel-utils
+cp arch/arm/boot/zImage zImage
+dd if=/dev/zero of=bootloader.bin bs=512 count=1
+cp /compile/doc/stable-ex/misc.cbp/misc/cmdline cmdline
+cp /compile/doc/stable-ex/misc.cbp/misc/kernel.its kernel.its
+# this one for some reason did not result in a bootable image
+#mkimage -D "-I dts -O dtb -p 2048" -f auto -A arm -O linux -T kernel -C none -a 0 -d zImage -b arch/arm/boot/dts/exynos5420-peach-pit.dtb -b arch/arm/boot/dts/exynos5800-peach-pi.dtb kernel.itb
+mkimage -D "-I dts -O dtb -p 2048" -f kernel.its kernel.itb
+vbutil_kernel --pack vmlinux.kpart --keyblock /usr/share/vboot/devkeys/kernel.keyblock --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk --version 1 --config cmdline --bootloader bootloader.bin --vmlinuz kernel.itb --arch arm
+cp -v vmlinux.kpart /boot/vmlinux.kpart-${kver}
+rm -f zImage cmdline bootloader.bin kernel.itb kernel.itb vmlinux.kpart
+# end chromebook special
+cd /boot
+update-initramfs -c -k ${kver}
+#mkimage -A arm -O linux -T ramdisk -a 0x0 -e 0x0 -n initrd.img-${kver} -d initrd.img-${kver} uInitrd-${kver}
+tar cvzf /compile/source/linux-odroid-cbp/${kver}.tar.gz /boot/*-${kver} /lib/modules/${kver}
+cp -v /compile/doc/stable-ex/config.cbp /compile/doc/stable-ex/config.cbp.old
+cp -v /compile/source/linux-odroid-cbp/.config /compile/doc/stable-ex/config.cbp
+cp -v /compile/source/linux-odroid-cbp/.config /compile/doc/stable-ex/config.cbp-${kver}
+cp -v /compile/source/linux-odroid-cbp/*.tar.gz /compile/result/stable-ex
+
+
+/etc/extlinux/extlinux.conf
+TIMEOUT 30
+DEFAULT v51027
+
+MENU TITLE peach pit sd boot options
+
+LABEL v51027
+      MENU LABEL v5.10.27 kernel mmcblk2
+      LINUX ../zImage-5.10.27-stb-cbp+
+      INITRD ../initrd.img-5.10.27-stb-cbp+
+      FDT ../dtb-5.10.27-stb-cbp+/exynos5420-peach-pit.dtb
+      APPEND console=tty1 root=/dev/mmcblk2p4 ro rootwait noinitrd net.ifnames=0 ipv6.disable=1 fsck.repair=yes mem=3584M
