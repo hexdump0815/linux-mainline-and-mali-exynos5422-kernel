@@ -3,7 +3,7 @@
 # - /compile/source/linux-odroid-cbp - the kernel sources checked out from gitrepo
 # - /compile/result/stable-ex - the resulting kernel, modules etc. tar.gz files
 # - /compile/doc/kernel-config-options - https://github.com/hexdump0815/kernel-config-options
-# name: odr-cbp
+# name: odr-cbp - chromebook peach based on odroid kernel tree and special cbp config
 
 cd /compile/source/linux-odroid-cbp
 
